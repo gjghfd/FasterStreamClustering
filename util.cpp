@@ -103,31 +103,4 @@ vector<Point> KMeans(const vector<Point> & points, int k, int d) {
     }
 
     return centers;
-
-    // Use external library to perform the K-means algorithm
-    /*
-    // write points to input.txt
-    FILE *input = fopen("input.txt", "w");
-    for (const auto & p : points) {
-        for (int i = 0; i < d; i++) fprintf(input, "%.5lf ", p.value[i]);
-        fprintf(input, "\n");
-    }
-    fclose(input);
-
-    // run the program "kmeans"
-    string command = "./kmeans input.txt " + to_string(k) + " output.txt > kmeansoutput.txt";
-    int ret = system(command.c_str());
-    if (ret) printf("Execute command %s failed, ret = %d\n", command.c_str(), ret);
-
-    // read points from output.txt
-    FILE *output = fopen("output.txt", "r");
-    vector<Point> clusters;
-    for (int i = 0; i < k; i++) {
-        Point p;
-        p.value.resize(d);
-        for (int j = 0; j < d; j++) fscanf(output, "%lf", &p.value[j]);
-        clusters.emplace_back(p);
-    }
-    return clusters;
-    */
 }
