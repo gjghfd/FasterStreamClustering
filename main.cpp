@@ -11,50 +11,6 @@ Runs all algorithms
 
 const string input_files[NUM_DATASET] = {"Adult.txt", "Bank.txt", "twitter.txt", "USC.txt"};
 
-// get memory usage in byte; return type: unsigned long
-// static vm_size_t getMemUsage() {
-//     struct task_basic_info info;
-//     mach_msg_type_number_t size = TASK_BASIC_INFO_COUNT;    //sizeof(info);
-//     kern_return_t kerr = task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&info, &size);
-//     return (kerr == KERN_SUCCESS) ? info.resident_size : 0; // size in byte
-// }
-vm_size_t getMemUsage()
-{
-    unsigned int task = 0;
-    int error = 0;
-    unsigned int count = 0;
-    struct task_basic_info ti;
-
-    error = task_for_pid(mach_task_self(), getpid(), &task);
-    if (error != KERN_SUCCESS)
-    {
-        return 0;
-    }
-    count = TASK_BASIC_INFO_COUNT;
-    error = task_info(task, TASK_BASIC_INFO, (task_info_t)&ti, &count);
-    if (error != KERN_SUCCESS)
-    {
-        return 0;
-    }
-
-    vm_region_basic_info_data_64_t b_info;
-    unsigned long address = SHARED_REGION_BASE_PPC;
-    unsigned long size = 0;
-    unsigned int object_name = 0;
-    count = VM_REGION_BASIC_INFO_COUNT_64;
-    error = vm_region_64(task, &address, &size, VM_REGION_BASIC_INFO, (vm_region_info_t)&b_info, &count, &object_name);
-    if (error == KERN_SUCCESS) 
-    {
-        if (b_info.reserved && size == (SHARED_REGION_NESTING_SIZE_PPC) &&
-            ti.virtual_size > (SHARED_REGION_NESTING_SIZE_PPC + SHARED_REGION_NESTING_MIN_PPC))
-        {
-            ti.virtual_size -= (SHARED_REGION_NESTING_SIZE_PPC + SHARED_REGION_NESTING_MIN_PPC);
-        }
-    }
-    printf("memory usage = %ld bytes\n", ti.resident_size);
-    return ti.resident_size;
-}
-
 // get current time in ms
 static struct timeval base_time;
 static void setBaseTime() {
@@ -115,19 +71,18 @@ int main() {
 
             printf("----- Running on Dataset %s with k = %d -----\n", input_files[dataset].c_str(), k);
 
-            vm_size_t total_used_mem[NUM_ALG] = {0};
+            uint64_t total_used_mem[NUM_ALG] = {0};
             double total_used_time[NUM_ALG] = {0};
             double total_dis[NUM_ALG] = {0};
 
             for (int round = 1; round <= TEST_ROUND; round++) {
                 int idx;
-                vm_size_t used_mem[NUM_ALG];
+                uint64_t used_mem[NUM_ALG];
                 double used_time[NUM_ALG];
                 double dis[NUM_ALG];
                 
                 // alg0
                 idx = 0;
-                vm_size_t st_mem = getMemUsage();
 
                 TempClustering clustering(k, d);
 
@@ -137,8 +92,8 @@ int main() {
                     clustering.update(p, true);
                 }
 
-                used_mem[idx] = getMemUsage() - st_mem;
                 used_time[idx] = getCurrentTime() - st_time;
+                used_mem[idx] = clustering.getMemoryUsage();
                 dis[idx] = getDis(points, clustering.getClusters(), k, d);
 
                 // alg1
@@ -146,7 +101,7 @@ int main() {
                 // ...
 
                 for (int i = 0; i < NUM_ALG; i++) {
-                    printf("Round #%d: alg %d, memory = %ld bytes, time = %.5lf ms, kmeans = %.5lf\n", round, i, used_mem[i], used_time[i], dis[i]);
+                    printf("Round #%d: alg %d, memory = %llu bytes, time = %.5lf ms, kmeans = %.5lf\n", round, i, used_mem[i], used_time[i], dis[i]);
                     total_used_mem[i] += used_mem[i];
                     total_used_time[i] += used_time[i];
                     total_dis[i] += dis[i];
@@ -155,7 +110,7 @@ int main() {
 
             printf("Summary:\n");
             for (int i = 0; i < NUM_ALG; i++) {
-                printf("alg %d: memory = %ld bytes, time = %.5lf ms, kmeans = %.5lf\n", i, total_used_mem[i] / TEST_ROUND, total_used_time[i] / TEST_ROUND, total_dis[i] / TEST_ROUND);
+                printf("alg %d: memory = %llu bytes, time = %.5lf ms, kmeans = %.5lf\n", i, total_used_mem[i] / TEST_ROUND, total_used_time[i] / TEST_ROUND, total_dis[i] / TEST_ROUND);
             }
         }
     }

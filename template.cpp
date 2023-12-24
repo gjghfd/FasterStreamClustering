@@ -22,3 +22,10 @@ void TempClustering::update(const Point & point, bool insert) {
 vector<Point> TempClustering::getClusters() {
     return KMeans(saved_points, k, d);
 }
+
+uint64_t TempClustering::getMemoryUsage() {
+    uint64_t sum = 0;
+    sum += 2 * sizeof(int);                             // k, d
+    sum += saved_points.size() * d * sizeof(double);    // saved_points
+    return sum;
+}

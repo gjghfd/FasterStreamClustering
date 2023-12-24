@@ -7,13 +7,8 @@
 #include <cstring>
 #include <random>
 #include <ctime>
-
 #include <sys/sysctl.h>
-#include <mach/mach.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <mach/vm_region.h>
-#include <mach/shared_region.h>
 
 using namespace std;
 
