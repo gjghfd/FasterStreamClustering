@@ -7,7 +7,7 @@
 class Vanilla {
     int k;  // number of clusters
     int d;  // dimension
-    int Delta_; //precision
+    int Delta; //precision
     int Depth;
     double opt; //prediction of the optimal clustering
     vector<Point> saved_points;

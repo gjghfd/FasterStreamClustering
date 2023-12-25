@@ -18,7 +18,7 @@ struct CountMin{
     void insert(const Point &point, int w){
         for(int i = 0; i < CMd; i++) buckets[i][HashFuc(point, seeds[i]) % CML] += w;
     }
-    void query(const Point &point, int w){
+    int query(const Point &point, int w){
         int minC = 1<<30;
         for(int i = 0; i < CMd; i++) minC = min(minC, buckets[i][HashFuc(point, seeds[i]) % CML]);
         return minC;
@@ -50,35 +50,36 @@ void Vanilla::update(const Point & point, bool insert) {
 
     int InsOrDel = insert ? 1 : -1;
     for(int i = 0; i < Depth; i++){
-        g = Delta >> i;
+        int g = Delta >> i;
         vector<int> dp;
-        for(int j = 0; j < d; j++) dp.push_back(int(point[i] / g));
+        for(int j = 0; j < d; j++) dp.push_back(int(point.value[i] / g));
         int curSize = (CM[dp] += InsOrDel);
         for(int i = 0; i < coreset_size; i++)
-           if(myRand() %  == 0) Sampler[i][dp] = point;
+           if(myRand(1) * curSize < 1) Sampler[i][dp] = point;
     }
 }
 
-void Vanilla:getCoreset(int sz){
+void Vanilla::getCoreset(int sz){
     has_coreset = true;
     coreset.clear();
     for(int i = 1; i < sz; i++){
         int cur = i % (Depth - 1) + 1, gi = Delta >> cur;
         double Ti = (d / gi) * (d / gi) * opt / k;
         for (const auto& kv : CM) {
-            if(kv.second == 0 || kv.second > T_i) continue;
-            double Ti1 = Ti << 2, gi1 = g1 << 1;
-            pt = Sampler[i][kv.first];
+            if(kv.second == 0 || kv.second > Ti) continue;
+            double Ti1 = Ti / 4, gi1 = gi << 1;
+            Point pt = Sampler[i][kv.first];
             vector<int> dp;
-            for(int j = 0; j < d; j++) dp.push_back(int(pt[i] / gi1));
+            for(int j = 0; j < d; j++) dp.push_back(int(pt.value[i] / gi1));
             if(CM[dp] <= Ti1) continue;
+            pt.weight /= sz;
             coreset.push_back(pt);
         }
     }
 }
 
-vector<Point> Vanilla::getClusters(int sz) {
-    if(!has_coreset) getCoreset(sz);
+vector<Point> Vanilla::getClusters() {
+    if(!has_coreset) getCoreset(coreset_size);
     return KMeans(coreset, k, d);
 }
 
