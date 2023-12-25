@@ -8,6 +8,8 @@
 #include <random>
 #include <ctime>
 #include <vector>
+#include <cmath>
+#include <cmap>
 #include <sys/sysctl.h>
 #include <unistd.h>
 
