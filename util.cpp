@@ -111,11 +111,13 @@ vector<Point> KMeans(const vector<Point> & points, int k, int d) {
         vector<double> sum(d);
         for (int i = 0; i < k; i++) {
             for (int j = 0; j < d; j++) sum[j] = 0;
+            double sum_weight = 0;
             for (auto idx : group[i]) {
+                sum_weight += points[idx].weight;
                 for (int j = 0; j < d; j++)
-                    sum[j] += points[idx].value[j];
+                    sum[j] += points[idx].value[j] * points[idx].weight;
             }
-            for (int j = 0; j < d; j++) centers[i].value[j] = sum[j] / (double) group[i].size();
+            for (int j = 0; j < d; j++) centers[i].value[j] = sum[j] / sum_weight;
         }
     }
 

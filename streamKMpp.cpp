@@ -23,9 +23,6 @@ void streamKMplusplus::findCoreset(vector<Point> & points) {
         vector<Point *> points;
         double weight;
         int q;
-        bool operator < (const Node &a) const{
-            return weight < a.weight;
-        }
     };
     vector<Node> leafNodes;
     
@@ -51,7 +48,7 @@ void streamKMplusplus::findCoreset(vector<Point> & points) {
     }
     leafNodes.emplace_back(root);
 
-    // split largest node repeatedly
+    // split one leaf repeatedly
     vector<double> dis(n);
     for (int i = 1; i < m; i++) {
         // select a leaf
@@ -192,7 +189,7 @@ vector<Point> streamKMplusplus::getClusters() {
             for (auto & p : vec) points.emplace_back(p);
         }
     
-    // NOTE: We do not perform another reduce here.
+    // NOTE: We do not perform a further reduce here.
     
     return KMeans(points, k, d);
 }

@@ -1,143 +1,143 @@
 ----- Running on Dataset Adult.txt with k = 25 -----
-Round #1: Alg naive, memory = 2735160 bytes, time = 2.42600 ms, kmeans = 3912837462330.98682
-Round #1: Alg streamKM++, memory = 335956 bytes, time = 132.66200 ms, kmeans = 4906568457299.76465
-Round #2: Alg naive, memory = 2735160 bytes, time = 1.55700 ms, kmeans = 3967509125402.21875
-Round #2: Alg streamKM++, memory = 335956 bytes, time = 127.89700 ms, kmeans = 4897645748060.13477
-Round #3: Alg naive, memory = 2735160 bytes, time = 1.52500 ms, kmeans = 3947803534501.67920
-Round #3: Alg streamKM++, memory = 335956 bytes, time = 128.63200 ms, kmeans = 4449300536088.33203
+Round #1: Alg naive, memory = 2735160 bytes, time = 2.04400 ms, kmeans = 3848904036830.02441
+Round #1: Alg streamKM++, memory = 335956 bytes, time = 134.95000 ms, kmeans = 3971166591352.73633
+Round #2: Alg naive, memory = 2735160 bytes, time = 1.56600 ms, kmeans = 3856061613796.39648
+Round #2: Alg streamKM++, memory = 335956 bytes, time = 129.98800 ms, kmeans = 3915978526668.85303
+Round #3: Alg naive, memory = 2735160 bytes, time = 1.38800 ms, kmeans = 3817790341764.85547
+Round #3: Alg streamKM++, memory = 335956 bytes, time = 143.54900 ms, kmeans = 4027577628077.17871
 
 Summary: 
-naive: memory = 2735160 bytes, time = 1.83600 ms, kmeans = 3942716707411.62842
-streamKM++: memory = 335956 bytes, time = 129.73033 ms, kmeans = 4751171580482.74316
+naive: memory = 2735160 bytes, time = 1.66600 ms, kmeans = 3840918664130.42578
+streamKM++: memory = 335956 bytes, time = 136.16233 ms, kmeans = 3971574248699.58984
 
 ----- Running on Dataset Adult.txt with k = 50 -----
-Round #1: Alg naive, memory = 2735160 bytes, time = 1.51800 ms, kmeans = 1317181178124.21753
-Round #1: Alg streamKM++, memory = 335956 bytes, time = 128.39500 ms, kmeans = 1673132885758.34399
-Round #2: Alg naive, memory = 2735160 bytes, time = 1.62400 ms, kmeans = 1338175088698.93848
-Round #2: Alg streamKM++, memory = 335956 bytes, time = 128.99300 ms, kmeans = 1662583891520.06689
-Round #3: Alg naive, memory = 2735160 bytes, time = 1.53000 ms, kmeans = 1309722020704.68604
-Round #3: Alg streamKM++, memory = 335956 bytes, time = 128.83800 ms, kmeans = 1665074216819.22852
+Round #1: Alg naive, memory = 2735160 bytes, time = 1.53700 ms, kmeans = 1294702294249.27783
+Round #1: Alg streamKM++, memory = 335956 bytes, time = 133.28400 ms, kmeans = 1283931654234.08716
+Round #2: Alg naive, memory = 2735160 bytes, time = 1.58400 ms, kmeans = 1355027761670.94019
+Round #2: Alg streamKM++, memory = 335956 bytes, time = 128.35600 ms, kmeans = 1357338396901.16846
+Round #3: Alg naive, memory = 2735160 bytes, time = 1.53100 ms, kmeans = 1276970649195.60742
+Round #3: Alg streamKM++, memory = 335956 bytes, time = 129.80600 ms, kmeans = 1292669993284.04590
 
 Summary: 
-naive: memory = 2735160 bytes, time = 1.55733 ms, kmeans = 1321692762509.28076
-streamKM++: memory = 335956 bytes, time = 128.74200 ms, kmeans = 1666930331365.87988
+naive: memory = 2735160 bytes, time = 1.55067 ms, kmeans = 1308900235038.60840
+streamKM++: memory = 335956 bytes, time = 130.48200 ms, kmeans = 1311313348139.76733
 
 ----- Running on Dataset Adult.txt with k = 75 -----
-Round #1: Alg naive, memory = 2735160 bytes, time = 1.47300 ms, kmeans = 696227526204.74487
-Round #1: Alg streamKM++, memory = 335956 bytes, time = 128.80300 ms, kmeans = 941082356522.84924
-Round #2: Alg naive, memory = 2735160 bytes, time = 1.41400 ms, kmeans = 741225984517.54272
-Round #2: Alg streamKM++, memory = 335956 bytes, time = 128.92700 ms, kmeans = 917020853155.91809
-Round #3: Alg naive, memory = 2735160 bytes, time = 1.43600 ms, kmeans = 725935991987.85840
-Round #3: Alg streamKM++, memory = 335956 bytes, time = 128.55600 ms, kmeans = 946487190030.55933
+Round #1: Alg naive, memory = 2735160 bytes, time = 1.53800 ms, kmeans = 696245298354.46008
+Round #1: Alg streamKM++, memory = 335956 bytes, time = 128.46600 ms, kmeans = 732046419277.19312
+Round #2: Alg naive, memory = 2735160 bytes, time = 1.81900 ms, kmeans = 703896135211.67493
+Round #2: Alg streamKM++, memory = 335956 bytes, time = 128.89800 ms, kmeans = 730331004918.79688
+Round #3: Alg naive, memory = 2735160 bytes, time = 1.48000 ms, kmeans = 707504690451.92981
+Round #3: Alg streamKM++, memory = 335956 bytes, time = 129.32600 ms, kmeans = 817818180320.85242
 
 Summary: 
-naive: memory = 2735160 bytes, time = 1.44100 ms, kmeans = 721129834236.71533
-streamKM++: memory = 335956 bytes, time = 128.76200 ms, kmeans = 934863466569.77551
+naive: memory = 2735160 bytes, time = 1.61233 ms, kmeans = 702548708006.02161
+streamKM++: memory = 335956 bytes, time = 128.89667 ms, kmeans = 760065201505.61414
 
 ----- Running on Dataset Bank.txt with k = 25 -----
-Round #1: Alg naive, memory = 3624552 bytes, time = 1.39900 ms, kmeans = 98184373.21540
-Round #1: Alg streamKM++, memory = 527924 bytes, time = 105.85300 ms, kmeans = 110576352.56220
-Round #2: Alg naive, memory = 3624552 bytes, time = 1.32000 ms, kmeans = 96652686.84039
-Round #2: Alg streamKM++, memory = 527924 bytes, time = 104.40700 ms, kmeans = 144980829.33607
-Round #3: Alg naive, memory = 3624552 bytes, time = 1.41800 ms, kmeans = 94107586.64206
-Round #3: Alg streamKM++, memory = 527924 bytes, time = 105.96200 ms, kmeans = 123814650.07453
+Round #1: Alg naive, memory = 3624552 bytes, time = 1.37900 ms, kmeans = 95520251.60541
+Round #1: Alg streamKM++, memory = 527924 bytes, time = 105.61700 ms, kmeans = 96119260.03847
+Round #2: Alg naive, memory = 3624552 bytes, time = 1.35100 ms, kmeans = 91763742.31706
+Round #2: Alg streamKM++, memory = 527924 bytes, time = 105.11600 ms, kmeans = 99249120.32977
+Round #3: Alg naive, memory = 3624552 bytes, time = 1.37400 ms, kmeans = 92119167.04997
+Round #3: Alg streamKM++, memory = 527924 bytes, time = 105.57600 ms, kmeans = 96417957.88786
 
 Summary: 
-naive: memory = 3624552 bytes, time = 1.37900 ms, kmeans = 96314882.23262
-streamKM++: memory = 527924 bytes, time = 105.40733 ms, kmeans = 126457277.32427
+naive: memory = 3624552 bytes, time = 1.36800 ms, kmeans = 93134386.99081
+streamKM++: memory = 527924 bytes, time = 105.43633 ms, kmeans = 97262112.75203
 
 ----- Running on Dataset Bank.txt with k = 50 -----
-Round #1: Alg naive, memory = 3624552 bytes, time = 1.42400 ms, kmeans = 42915012.14409
-Round #1: Alg streamKM++, memory = 527924 bytes, time = 105.28400 ms, kmeans = 46979064.91139
-Round #2: Alg naive, memory = 3624552 bytes, time = 1.44000 ms, kmeans = 44088587.68748
-Round #2: Alg streamKM++, memory = 527924 bytes, time = 105.87000 ms, kmeans = 49882237.32787
-Round #3: Alg naive, memory = 3624552 bytes, time = 1.46000 ms, kmeans = 43289796.12754
-Round #3: Alg streamKM++, memory = 527924 bytes, time = 105.77600 ms, kmeans = 47196419.23631
+Round #1: Alg naive, memory = 3624552 bytes, time = 1.32000 ms, kmeans = 43941239.89799
+Round #1: Alg streamKM++, memory = 527924 bytes, time = 104.77000 ms, kmeans = 44791728.35218
+Round #2: Alg naive, memory = 3624552 bytes, time = 1.34000 ms, kmeans = 43560246.46655
+Round #2: Alg streamKM++, memory = 527924 bytes, time = 107.89700 ms, kmeans = 43196287.84541
+Round #3: Alg naive, memory = 3624552 bytes, time = 1.50900 ms, kmeans = 43639471.53888
+Round #3: Alg streamKM++, memory = 527924 bytes, time = 109.23600 ms, kmeans = 44596570.59941
 
 Summary: 
-naive: memory = 3624552 bytes, time = 1.44133 ms, kmeans = 43431131.98637
-streamKM++: memory = 527924 bytes, time = 105.64333 ms, kmeans = 48019240.49186
+naive: memory = 3624552 bytes, time = 1.38967 ms, kmeans = 43713652.63447
+streamKM++: memory = 527924 bytes, time = 107.30100 ms, kmeans = 44194862.26567
 
 ----- Running on Dataset Bank.txt with k = 75 -----
-Round #1: Alg naive, memory = 3624552 bytes, time = 1.41600 ms, kmeans = 27908403.75155
-Round #1: Alg streamKM++, memory = 527924 bytes, time = 104.86000 ms, kmeans = 28604741.12590
-Round #2: Alg naive, memory = 3624552 bytes, time = 1.27700 ms, kmeans = 26907958.62788
-Round #2: Alg streamKM++, memory = 527924 bytes, time = 106.08400 ms, kmeans = 29706853.45733
-Round #3: Alg naive, memory = 3624552 bytes, time = 1.29200 ms, kmeans = 27842479.14795
-Round #3: Alg streamKM++, memory = 527924 bytes, time = 109.91400 ms, kmeans = 28946152.17165
+Round #1: Alg naive, memory = 3624552 bytes, time = 1.42400 ms, kmeans = 26618659.24871
+Round #1: Alg streamKM++, memory = 527924 bytes, time = 107.65300 ms, kmeans = 28306835.74860
+Round #2: Alg naive, memory = 3624552 bytes, time = 1.53600 ms, kmeans = 27187372.66957
+Round #2: Alg streamKM++, memory = 527924 bytes, time = 114.08200 ms, kmeans = 28118289.37733
+Round #3: Alg naive, memory = 3624552 bytes, time = 1.43800 ms, kmeans = 27780392.86667
+Round #3: Alg streamKM++, memory = 527924 bytes, time = 106.15300 ms, kmeans = 29315814.40439
 
 Summary: 
-naive: memory = 3624552 bytes, time = 1.32833 ms, kmeans = 27552947.17579
-streamKM++: memory = 527924 bytes, time = 106.95267 ms, kmeans = 29085915.58496
+naive: memory = 3624552 bytes, time = 1.46600 ms, kmeans = 27195474.92832
+streamKM++: memory = 527924 bytes, time = 109.29600 ms, kmeans = 28580313.17677
 
 ----- Running on Dataset twitter.txt with k = 25 -----
-Round #1: Alg naive, memory = 2400008 bytes, time = 2.58500 ms, kmeans = 4320369.41892
-Round #1: Alg streamKM++, memory = 167988 bytes, time = 247.75100 ms, kmeans = 6157764.11168
-Round #2: Alg naive, memory = 2400008 bytes, time = 2.70000 ms, kmeans = 4473908.44194
-Round #2: Alg streamKM++, memory = 167988 bytes, time = 247.52900 ms, kmeans = 5475350.15914
-Round #3: Alg naive, memory = 2400008 bytes, time = 2.75900 ms, kmeans = 4973292.22764
-Round #3: Alg streamKM++, memory = 167988 bytes, time = 248.36400 ms, kmeans = 5209897.40476
+Round #1: Alg naive, memory = 2400008 bytes, time = 2.71900 ms, kmeans = 4909852.15883
+Round #1: Alg streamKM++, memory = 167988 bytes, time = 251.75300 ms, kmeans = 4493256.07964
+Round #2: Alg naive, memory = 2400008 bytes, time = 2.98500 ms, kmeans = 5026928.68482
+Round #2: Alg streamKM++, memory = 167988 bytes, time = 257.71900 ms, kmeans = 6497195.59397
+Round #3: Alg naive, memory = 2400008 bytes, time = 2.66800 ms, kmeans = 4212561.26864
+Round #3: Alg streamKM++, memory = 167988 bytes, time = 258.96500 ms, kmeans = 5731405.70270
 
 Summary: 
-naive: memory = 2400008 bytes, time = 2.68133 ms, kmeans = 4589190.02950
-streamKM++: memory = 167988 bytes, time = 247.88133 ms, kmeans = 5614337.22519
+naive: memory = 2400008 bytes, time = 2.79067 ms, kmeans = 4716447.37077
+streamKM++: memory = 167988 bytes, time = 256.14567 ms, kmeans = 5573952.45877
 
 ----- Running on Dataset twitter.txt with k = 50 -----
-Round #1: Alg naive, memory = 2400008 bytes, time = 2.67800 ms, kmeans = 1875441.92789
-Round #1: Alg streamKM++, memory = 167988 bytes, time = 247.47900 ms, kmeans = 2612292.22553
-Round #2: Alg naive, memory = 2400008 bytes, time = 2.77300 ms, kmeans = 2102666.23144
-Round #2: Alg streamKM++, memory = 167988 bytes, time = 248.92200 ms, kmeans = 2735026.12617
-Round #3: Alg naive, memory = 2400008 bytes, time = 2.67500 ms, kmeans = 2009366.69151
-Round #3: Alg streamKM++, memory = 167988 bytes, time = 251.93600 ms, kmeans = 2602076.59612
+Round #1: Alg naive, memory = 2400008 bytes, time = 2.99200 ms, kmeans = 1791519.89511
+Round #1: Alg streamKM++, memory = 167988 bytes, time = 270.56600 ms, kmeans = 2048437.45706
+Round #2: Alg naive, memory = 2400008 bytes, time = 3.12700 ms, kmeans = 2019345.25492
+Round #2: Alg streamKM++, memory = 167988 bytes, time = 253.72500 ms, kmeans = 1959332.27957
+Round #3: Alg naive, memory = 2400008 bytes, time = 2.67100 ms, kmeans = 1926204.91008
+Round #3: Alg streamKM++, memory = 167988 bytes, time = 254.10000 ms, kmeans = 2019954.43063
 
 Summary: 
-naive: memory = 2400008 bytes, time = 2.70867 ms, kmeans = 1995824.95028
-streamKM++: memory = 167988 bytes, time = 249.44567 ms, kmeans = 2649798.31594
+naive: memory = 2400008 bytes, time = 2.93000 ms, kmeans = 1912356.68670
+streamKM++: memory = 167988 bytes, time = 259.46367 ms, kmeans = 2009241.38909
 
 ----- Running on Dataset twitter.txt with k = 75 -----
-Round #1: Alg naive, memory = 2400008 bytes, time = 2.70300 ms, kmeans = 1184415.22732
-Round #1: Alg streamKM++, memory = 167988 bytes, time = 250.03100 ms, kmeans = 1706395.21170
-Round #2: Alg naive, memory = 2400008 bytes, time = 2.65600 ms, kmeans = 1194277.13262
-Round #2: Alg streamKM++, memory = 167988 bytes, time = 250.16000 ms, kmeans = 1635761.65497
-Round #3: Alg naive, memory = 2400008 bytes, time = 2.88200 ms, kmeans = 1211343.84217
-Round #3: Alg streamKM++, memory = 167988 bytes, time = 254.39700 ms, kmeans = 1584377.69897
+Round #1: Alg naive, memory = 2400008 bytes, time = 2.78600 ms, kmeans = 1223735.54301
+Round #1: Alg streamKM++, memory = 167988 bytes, time = 250.47600 ms, kmeans = 1191112.11044
+Round #2: Alg naive, memory = 2400008 bytes, time = 3.06400 ms, kmeans = 1212522.70791
+Round #2: Alg streamKM++, memory = 167988 bytes, time = 248.23100 ms, kmeans = 1326918.20014
+Round #3: Alg naive, memory = 2400008 bytes, time = 2.64800 ms, kmeans = 1226321.88901
+Round #3: Alg streamKM++, memory = 167988 bytes, time = 255.84300 ms, kmeans = 1249396.54457
 
 Summary: 
-naive: memory = 2400008 bytes, time = 2.74700 ms, kmeans = 1196678.73404
-streamKM++: memory = 167988 bytes, time = 251.52933 ms, kmeans = 1642178.18854
+naive: memory = 2400008 bytes, time = 2.83267 ms, kmeans = 1220860.04664
+streamKM++: memory = 167988 bytes, time = 251.51667 ms, kmeans = 1255808.95172
 
 ----- Running on Dataset USC.txt with k = 25 -----
-Round #1: Alg naive, memory = 55200008 bytes, time = 9.96000 ms, kmeans = 7026567.52448
-Round #1: Alg streamKM++, memory = 3863460 bytes, time = 562.73000 ms, kmeans = 8406215.67068
-Round #2: Alg naive, memory = 55200008 bytes, time = 8.27100 ms, kmeans = 7108574.04867
-Round #2: Alg streamKM++, memory = 3863460 bytes, time = 559.78400 ms, kmeans = 7363890.44090
-Round #3: Alg naive, memory = 55200008 bytes, time = 7.96400 ms, kmeans = 7302913.41400
-Round #3: Alg streamKM++, memory = 3863460 bytes, time = 557.22200 ms, kmeans = 7979733.30434
+Round #1: Alg naive, memory = 55200008 bytes, time = 8.59000 ms, kmeans = 7439703.82271
+Round #1: Alg streamKM++, memory = 3863460 bytes, time = 569.77100 ms, kmeans = 7143506.57251
+Round #2: Alg naive, memory = 55200008 bytes, time = 7.53200 ms, kmeans = 6957679.20924
+Round #2: Alg streamKM++, memory = 3863460 bytes, time = 559.01600 ms, kmeans = 7421059.56401
+Round #3: Alg naive, memory = 55200008 bytes, time = 7.10900 ms, kmeans = 7661219.43706
+Round #3: Alg streamKM++, memory = 3863460 bytes, time = 581.93500 ms, kmeans = 7416212.04633
 
 Summary: 
-naive: memory = 55200008 bytes, time = 8.73167 ms, kmeans = 7146018.32905
-streamKM++: memory = 3863460 bytes, time = 559.91200 ms, kmeans = 7916613.13864
+naive: memory = 55200008 bytes, time = 7.74367 ms, kmeans = 7352867.48967
+streamKM++: memory = 3863460 bytes, time = 570.24067 ms, kmeans = 7326926.06095
 
 ----- Running on Dataset USC.txt with k = 50 -----
-Round #1: Alg naive, memory = 55200008 bytes, time = 8.39500 ms, kmeans = 5308587.75055
-Round #1: Alg streamKM++, memory = 3863460 bytes, time = 557.13900 ms, kmeans = 5436731.78524
-Round #2: Alg naive, memory = 55200008 bytes, time = 7.28800 ms, kmeans = 5600843.43180
-Round #2: Alg streamKM++, memory = 3863460 bytes, time = 555.13200 ms, kmeans = 5516276.00733
-Round #3: Alg naive, memory = 55200008 bytes, time = 7.29600 ms, kmeans = 5316575.93252
-Round #3: Alg streamKM++, memory = 3863460 bytes, time = 554.78500 ms, kmeans = 5532947.03332
+Round #1: Alg naive, memory = 55200008 bytes, time = 6.72900 ms, kmeans = 5421316.78484
+Round #1: Alg streamKM++, memory = 3863460 bytes, time = 557.02700 ms, kmeans = 5516582.66958
+Round #2: Alg naive, memory = 55200008 bytes, time = 7.26400 ms, kmeans = 5142485.43297
+Round #2: Alg streamKM++, memory = 3863460 bytes, time = 571.18300 ms, kmeans = 5559787.70346
+Round #3: Alg naive, memory = 55200008 bytes, time = 7.09500 ms, kmeans = 5330961.97858
+Round #3: Alg streamKM++, memory = 3863460 bytes, time = 567.61900 ms, kmeans = 5690768.45056
 
 Summary: 
-naive: memory = 55200008 bytes, time = 7.65967 ms, kmeans = 5408669.03829
-streamKM++: memory = 3863460 bytes, time = 555.68533 ms, kmeans = 5495318.27530
+naive: memory = 55200008 bytes, time = 7.02933 ms, kmeans = 5298254.73213
+streamKM++: memory = 3863460 bytes, time = 565.27633 ms, kmeans = 5589046.27453
 
 ----- Running on Dataset USC.txt with k = 75 -----
-Round #1: Alg naive, memory = 55200008 bytes, time = 7.23700 ms, kmeans = 4618219.56073
-Round #1: Alg streamKM++, memory = 3863460 bytes, time = 552.56200 ms, kmeans = 4704027.61161
-Round #2: Alg naive, memory = 55200008 bytes, time = 7.76400 ms, kmeans = 4553067.93490
-Round #2: Alg streamKM++, memory = 3863460 bytes, time = 553.28100 ms, kmeans = 4734306.07640
-Round #3: Alg naive, memory = 55200008 bytes, time = 7.20900 ms, kmeans = 4712512.73141
-Round #3: Alg streamKM++, memory = 3863460 bytes, time = 561.55000 ms, kmeans = 4685889.72159
+Round #1: Alg naive, memory = 55200008 bytes, time = 7.44600 ms, kmeans = 4751479.44571
+Round #1: Alg streamKM++, memory = 3863460 bytes, time = 556.04500 ms, kmeans = 4730543.74567
+Round #2: Alg naive, memory = 55200008 bytes, time = 7.32100 ms, kmeans = 4554867.39236
+Round #2: Alg streamKM++, memory = 3863460 bytes, time = 555.51000 ms, kmeans = 4737466.71233
+Round #3: Alg naive, memory = 55200008 bytes, time = 6.98600 ms, kmeans = 4633729.79131
+Round #3: Alg streamKM++, memory = 3863460 bytes, time = 556.10400 ms, kmeans = 4769152.09179
 
 Summary: 
-naive: memory = 55200008 bytes, time = 7.40333 ms, kmeans = 4627933.40901
-streamKM++: memory = 3863460 bytes, time = 555.79767 ms, kmeans = 4708074.46987
+naive: memory = 55200008 bytes, time = 7.25100 ms, kmeans = 4646692.20979
+streamKM++: memory = 3863460 bytes, time = 555.88633 ms, kmeans = 4745720.84993
