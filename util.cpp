@@ -2,36 +2,55 @@
 
 static mt19937 mt(time(0));
 
-static double myRand(double interval) {
+double myRand(double interval) {
     // return a random value in [0, interval]
     uniform_real_distribution<double> realDist(0, interval);
     return realDist(mt);
 }
 
-static double squaredDistance(const Point & point1, const Point & point2, int d) {
+// calculate squared distance from point1 to point2
+double squaredDistance(const Point & point1, const Point & point2, int d) {
     double sum = 0;
     for (int i = 0; i < d; i++)
         sum += (point1.value[i] - point2.value[i]) * (point1.value[i] - point2.value[i]);
     return sum;
 }
+double squaredDistance(const Point *point1, const Point *point2, int d) {
+    double sum = 0;
+    for (int i = 0; i < d; i++)
+        sum += (point1->value[i] - point2->value[i]) * (point1->value[i] - point2->value[i]);
+    return sum;
+}
 
-static double getDist(const Point & point, const vector<Point> & centers, int num_centers, int d) {
+// calculate min_i(dis(point, centers[i]))
+double squaredDistance(const Point & point, const vector<Point> & centers, int num_centers, int d) {
     double minDist = squaredDistance(point, centers[0], d);
     for (int i = 1; i < num_centers; i++)
         minDist = min(minDist, squaredDistance(point, centers[i], d));
     return minDist;
 }
 
-static int findNearest(const Point & point, const vector<Point> & centers, int k, int d) {
+// calculate sum_i(min_j(dis(points[i],centers[j])))
+double squaredDistance(const vector<Point> & points, const vector<Point> & centers, int num_centers, int d) {
+    double sum = 0;
+    for (const auto & p : points) {
+        sum += squaredDistance(p, centers, num_centers, d);
+    }
+    return sum;
+}
+
+// find the nearest center to the point
+int findNearest(const Point & point, const vector<Point> & centers, int num_centers, int d) {
     int idx = 0;
     double minDist = squaredDistance(point, centers[0], d);
-    for (int i = 1; i < k; i++) {
+    for (int i = 1; i < num_centers; i++) {
         double dist = squaredDistance(point, centers[i], d);
         if (dist < minDist) minDist = dist, idx = i;
     }
     return idx;
 }
 
+// a weighted K-means++
 vector<Point> KMeans(const vector<Point> & points, int k, int d) {
     int n = points.size();
     if (n < k) {
@@ -41,18 +60,27 @@ vector<Point> KMeans(const vector<Point> & points, int k, int d) {
     vector<Point> centers(k);
     vector<double> dis(n);
 
-    // K-means++
     // get the first center
-    int first_center = (int) myRand(n);
-    for (int i = 0; i < n; i++) is_center[i] = (i == first_center ? true : false);
-    centers[0] = points[first_center];
+    double sum = 0;
+    for (int i = 0; i < n; i++) sum += points[i].weight;
+    double value = myRand(sum);
+    for (int i = 0; i < n; i++) {
+        value -= points[i].weight;
+        if (value <= 0 || i == n - 1) {
+            // i is the first center
+            for (int j = 0; j < n; j++) is_center[j] = (j == i ? true : false);
+            centers[0] = points[i];
+            break;
+        }
+    }
 
+    // get other centers
     for (int i = 1; i < k; i++) {
         // determine the i-th center
         double sum = 0;
         for (int j = 0; j < n; j++)
             if (!is_center[j]) {
-                dis[j] = getDist(points[j], centers, i, d);
+                dis[j] = squaredDistance(points[j], centers, i, d) * points[j].weight;
                 sum += dis[j];
             }
         

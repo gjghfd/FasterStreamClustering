@@ -7,6 +7,9 @@ TempClustering::TempClustering(int k_, int d_) {
 }
 
 void TempClustering::update(const Point & point, bool insert) {
+    if (point.weight <= 0) {
+        throw runtime_error("Point weight must be positive.");
+    }
     if (point.value.size() != d) {
         throw runtime_error("Point dimension mismatch.");
     }
@@ -25,7 +28,10 @@ vector<Point> TempClustering::getClusters() {
 
 uint64_t TempClustering::getMemoryUsage() {
     uint64_t sum = 0;
-    sum += 2 * sizeof(int);                             // k, d
-    sum += saved_points.size() * d * sizeof(double);    // saved_points
+    sum += 2 * sizeof(int);                                   // k, d
+    sum += saved_points.size() * (d + 1) * sizeof(double);    // saved_points
     return sum;
+}
+uint64_t TempClustering::getMaxMemoryUsage() {
+    return getMemoryUsage();      // the memory usage is always increasing
 }

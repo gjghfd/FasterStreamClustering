@@ -1,15 +1,17 @@
 #include "common.h"
 #include "template.h"
+#include "streamKMpp.h"
 
 /*
 Runs all algorithms
 */
 
-#define NUM_ALG 1
+#define NUM_ALG 2
 #define NUM_DATASET 4
 #define TEST_ROUND 3
 
 const string input_files[NUM_DATASET] = {"Adult.txt", "Bank.txt", "twitter.txt", "USC.txt"};
+const char *alg_name[NUM_ALG] = {"naive", "streamKM++"};
 
 // get current time in ms
 static struct timeval base_time;
@@ -22,22 +24,15 @@ static double getCurrentTime() {
     return (t.tv_sec - base_time.tv_sec) * (double) 1000.0 + (t.tv_usec - base_time.tv_usec) / (double) 1000.0;
 }
 
-// get total distance based on the points in coreset
-static double getPointDis(const Point & A, const Point & B, int d) {
-    double res = 0;
-    for (int i = 0; i < d; i++) {
-        res += (A.value[i] - B.value[i]) * (A.value[i] - B.value[i]);
-    }
-    return res;
-}
-static double getDis(const vector<Point> & points, const vector<Point> & clusters, int k, int d) {
-    double sum = 0;
+template<typename T>
+void runTest(T & clustering, int idx, vector<Point> & points, uint64_t *used_mem, double *used_time, double *dis, int k, int d) {
+    double st_time = getCurrentTime();
     for (const auto & p : points) {
-        double minDis = getPointDis(p, clusters[0], d);
-        for (int j = 1; j < k; j++) minDis = min(minDis, getPointDis(p, clusters[j], d));
-        sum += minDis;
+        clustering.update(p, true);
     }
-    return sum;
+    used_time[idx] = getCurrentTime() - st_time;
+    used_mem[idx] = clustering.getMaxMemoryUsage();
+    dis[idx] = squaredDistance(points, clustering.getClusters(), k, d);
 }
 
 int main() {
@@ -58,6 +53,7 @@ int main() {
         fscanf(input, "%d%d", &n, &d);
         while (n--) {
             Point p;
+            p.weight = 1;
             p.value.resize(d);
             for (int i = 0; i < d; i++) fscanf(input, "%lf", &p.value[i]);
             points.emplace_back(p);
@@ -82,36 +78,28 @@ int main() {
                 double dis[NUM_ALG];
                 
                 // alg0
-                idx = 0;
-
-                TempClustering clustering(k, d);
-
-                double st_time = getCurrentTime();
-
-                for (const auto & p : points) {
-                    clustering.update(p, true);
-                }
-
-                used_time[idx] = getCurrentTime() - st_time;
-                used_mem[idx] = clustering.getMemoryUsage();
-                dis[idx] = getDis(points, clustering.getClusters(), k, d);
+                TempClustering tempClustering(k, d);
+                runTest(tempClustering, 0, points, used_mem, used_time, dis, k, d);
 
                 // alg1
-                idx = 1;
+                streamKMplusplus streamKMppclustering(k, d, 1000);
+                runTest(streamKMppclustering, 1, points, used_mem, used_time, dis, k, d);
+                
                 // ...
 
                 for (int i = 0; i < NUM_ALG; i++) {
-                    printf("Round #%d: alg %d, memory = %llu bytes, time = %.5lf ms, kmeans = %.5lf\n", round, i, used_mem[i], used_time[i], dis[i]);
+                    printf("Round #%d: Alg %s, memory = %llu bytes, time = %.5lf ms, kmeans = %.5lf\n", round, alg_name[i], used_mem[i], used_time[i], dis[i]);
                     total_used_mem[i] += used_mem[i];
                     total_used_time[i] += used_time[i];
                     total_dis[i] += dis[i];
                 }
             }
 
-            printf("Summary:\n");
+            printf("\nSummary: \n");
             for (int i = 0; i < NUM_ALG; i++) {
-                printf("alg %d: memory = %llu bytes, time = %.5lf ms, kmeans = %.5lf\n", i, total_used_mem[i] / TEST_ROUND, total_used_time[i] / TEST_ROUND, total_dis[i] / TEST_ROUND);
+                printf("%s: memory = %llu bytes, time = %.5lf ms, kmeans = %.5lf\n", alg_name[i], total_used_mem[i] / TEST_ROUND, total_used_time[i] / TEST_ROUND, total_dis[i] / TEST_ROUND);
             }
+            printf("\n");
         }
     }
     return 0;
