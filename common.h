@@ -7,9 +7,9 @@
 #include <cstring>
 #include <random>
 #include <ctime>
-#include <vector>
 #include <cmath>
 #include <map>
+#include <vector>
 #include <sys/sysctl.h>
 #include <unistd.h>
 
@@ -22,8 +22,9 @@ struct Point {
 
 extern vector<Point> KMeans(const vector<Point> & points, int k, int d);
 extern double myRand(double interval);
+extern double squaredDistance(const Point *point1, const Point *point2, int d);
 extern double squaredDistance(const Point & point1, const Point & point2, int d);
 extern double squaredDistance(const Point & point, const vector<Point> & centers, int num_centers, int d);
 extern double squaredDistance(const vector<Point> & points, const vector<Point> & centers, int num_centers, int d);
-extern double squaredDistance(const Point *point1, const Point *point2, int d);
+extern double squaredDistanceWeighted(const vector<Point> & points, const vector<Point> & centers, int num_centers, int d);
 extern int findNearest(const Point & point, const vector<Point> & centers, int num_centers, int d);

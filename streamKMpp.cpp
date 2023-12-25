@@ -189,9 +189,26 @@ vector<Point> streamKMplusplus::getClusters() {
             for (auto & p : vec) points.emplace_back(p);
         }
     
-    // NOTE: We do not perform a further reduce here.
+    // reduce to m points
+    findCoreset(points);
+
+    vector<Point> centers = KMeans(points, k, d);
+
+    return centers;
+}
+
+double streamKMplusplus::calculateKMeans(vector<Point> & centers) {
+    int k = centers.size();
+    vector<Point> points;
+    for (auto & vec : buckets)
+        if (vec.size()) {
+            for (auto & p : vec) points.emplace_back(p);
+        }
+
+    // reduce to m points
+    findCoreset(points);
     
-    return KMeans(points, k, d);
+    return squaredDistanceWeighted(points, centers, k, d);
 }
 
 uint64_t streamKMplusplus::getMemoryUsage() {

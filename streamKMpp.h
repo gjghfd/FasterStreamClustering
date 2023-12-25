@@ -15,6 +15,7 @@ public:
 
     void update(const Point & point, bool insert);      // insert or delete a point
     vector<Point> getClusters();                        // return the cluster centers
+    double calculateKMeans(vector<Point> & centers);          // calculate the k-means when using given points as centers
     uint64_t getMemoryUsage();                          // compute the current memory usage
     uint64_t getMaxMemoryUsage();                       // compute the max memory usage
 

@@ -39,6 +39,15 @@ double squaredDistance(const vector<Point> & points, const vector<Point> & cente
     return sum;
 }
 
+// calculate sum_i(min_j(dis(points[i],centers[j]))*points[i].weight)
+double squaredDistanceWeighted(const vector<Point> & points, const vector<Point> & centers, int num_centers, int d) {
+    double sum = 0;
+    for (const auto & p : points) {
+        sum += squaredDistance(p, centers, num_centers, d) * p.weight;
+    }
+    return sum;
+}
+
 // find the nearest center to the point
 int findNearest(const Point & point, const vector<Point> & centers, int num_centers, int d) {
     int idx = 0;

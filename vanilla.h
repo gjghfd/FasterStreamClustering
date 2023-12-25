@@ -21,6 +21,7 @@ public:
     void update(const Point & point, bool insert);      // insert or delete a point
     void getCoreset(int sz);
     vector<Point> getClusters();                        // return the cluster centers
+    double calculateKMeans(vector<Point> & centers);
     uint64_t getMemoryUsage();                          // compute the current memory usage
     uint64_t getMaxMemoryUsage();                       // compute the max memory usage
 };

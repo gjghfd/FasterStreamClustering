@@ -83,6 +83,11 @@ vector<Point> Vanilla::getClusters() {
     return KMeans(coreset, k, d);
 }
 
+double Vanilla::calculateKMeans(vector<Point> & centers) {
+    if(!has_coreset) getCoreset(coreset_size);
+    return squaredDistanceWeighted(coreset, centers, k, d);
+}
+
 uint64_t Vanilla::getMemoryUsage() {
     uint64_t sum = 0;
     sum += 2 * sizeof(int);                                   // k, d
