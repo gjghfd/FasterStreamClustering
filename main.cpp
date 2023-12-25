@@ -28,7 +28,7 @@ static double getPointDis(const Point & A, const Point & B, int d) {
     for (int i = 0; i < d; i++) {
         res += (A.value[i] - B.value[i]) * (A.value[i] - B.value[i]);
     }
-    return sqrt(res);
+    return res;
 }
 static double getDis(const vector<Point> & points, const vector<Point> & clusters, int k, int d) {
     double sum = 0;

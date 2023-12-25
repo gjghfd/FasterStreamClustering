@@ -42,7 +42,6 @@ vector<Point> KMeans(const vector<Point> & points, int k, int d) {
     vector<double> dis(n);
 
     // K-means++
-    //*
     // get the first center
     int first_center = (int) myRand(n);
     for (int i = 0; i < n; i++) is_center[i] = (i == first_center ? true : false);
@@ -69,16 +68,6 @@ vector<Point> KMeans(const vector<Point> & points, int k, int d) {
                 }
             }
     }
-    //*/
-
-    // Select initial centers randomly
-    /*
-    for (int i = 0; i < k; i++) {
-        int center = (int) myRand(n);
-        while (is_center[center]) center = (int) myRand(n);
-        centers[i] = points[center];
-    }
-    //*/
 
     // now initial centers are chosen, proceed with k-means
     for (int iter = 0; iter < 100; iter++) {
