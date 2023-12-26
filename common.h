@@ -31,3 +31,4 @@ extern double squaredDistance(const Point & point, const vector<Point> & centers
 extern double squaredDistance(const vector<Point> & points, const vector<Point> & centers, int num_centers, int d);
 extern double squaredDistanceWeighted(const vector<Point> & points, const vector<Point> & centers, int num_centers, int d);
 extern int findNearest(const Point & point, const vector<Point> & centers, int num_centers, int d);
+extern int sampleDistribution(vector<double> & pro);

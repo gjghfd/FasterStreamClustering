@@ -59,6 +59,28 @@ int findNearest(const Point & point, const vector<Point> & centers, int num_cent
     return idx;
 }
 
+// perform a sampling based on the probability of each index
+int sampleDistribution(vector<double> & pro) {
+    int n = pro.size();
+    if (!n) {
+        throw runtime_error("sampleDistribution needs at least one element.\n");
+    }
+    vector<double> prefixSum(n);
+    prefixSum[0] = pro[0];
+    for (int i = 1; i < n; i++) prefixSum[i] = prefixSum[i-1] + pro[i];
+
+    double value = myRand(prefixSum[n-1]);
+
+    // perform binary search
+    int l = 0, r = n - 1;
+    while (l <= r) {
+        int mid = (l + r) >> 1;
+        if (prefixSum[mid] >= value) r = mid - 1;
+        else l = mid + 1;
+    }
+    return l;
+}
+
 // a weighted K-means++
 vector<Point> KMeans(const vector<Point> & points, int k, int d) {
     int n = points.size();
