@@ -12,7 +12,7 @@ Runs all algorithms
 #define TEST_ROUND 3
 #define NUM_DIFF_TEST 10
 
-#define MAX_POINTS 200000
+#define MAX_POINTS 10000
 
 const string input_files[NUM_DATASET] = {"census.txt", "Adult.txt", "Bank.txt", "twitter.txt", "USC.txt"};
 const char *alg_name[NUM_ALG] = {"streamKM++", "vanilla"};
@@ -42,11 +42,13 @@ void runTest(T & clustering, int idx, vector<Point> & points, vector<Point> *tes
     double sum = 0;
     for (double l : latency) sum += l;
     avg_latency[idx] = sum / (double) points.size();
-    int p99 = points.size() - points.size() / 100;
+    int p99 = points.size() - points.size() / 1000;
     p99_latency[idx] = latency[p99];
     // process others
     used_mem[idx] = clustering.getMaxMemoryUsage();
+
     dis[idx] = squaredDistance(points, clustering.getClusters(), k, d);
+
 
     // get max diff
     double mx = 0;
@@ -119,12 +121,12 @@ int main() {
                 }
 
                 // alg1
-                streamKMplusplus streamKMppclustering(k, d, 100);
-                runTest(streamKMppclustering, 0, points, testCenters, testDis, used_mem, latency, P99_latency, dis, diff, k, d);
+                // streamKMplusplus streamKMppclustering(k, d, 100);
+                // runTest(streamKMppclustering, 0, points, testCenters, testDis, used_mem, latency, P99_latency, dis, diff, k, d);
 
                 // alg2
-                // Vanilla vanillaclustering(k, d, 1 << ((int)log2(mx) + 1), 1000 / k, 100);
-                // runTest(vanillaclustering, 1, points, testCenters, testDis, used_mem, used_time, P99_latency, dis, diff, k, d);
+                Vanilla vanillaclustering(k, d, 1 << ((int)log2(mx) + 1), 1000 / k, 100);
+                runTest(vanillaclustering, 1, points, testCenters, testDis, used_mem, latency, P99_latency, dis, diff, k, d);
 
                 total_std_dis += squaredDistance(points, KMeans(points, k, d), k, d);
 

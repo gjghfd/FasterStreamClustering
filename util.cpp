@@ -60,14 +60,14 @@ int findNearest(const Point & point, const vector<Point> & centers, int num_cent
 }
 
 // perform a sampling based on the probability of each index
-int sampleDistribution(vector<double> & pro) {
-    int n = pro.size();
+int sampleDistribution(vector<double> & prefixSum) {
+    int n = prefixSum.size();
     if (!n) {
         throw runtime_error("sampleDistribution needs at least one element.\n");
     }
-    vector<double> prefixSum(n);
-    prefixSum[0] = pro[0];
-    for (int i = 1; i < n; i++) prefixSum[i] = prefixSum[i-1] + pro[i];
+    // vector<double> prefixSum(n);
+    // prefixSum[0] = pro[0];
+    // for (int i = 1; i < n; i++) prefixSum[i] = prefixSum[i-1] + pro[i];
 
     double value = myRand(prefixSum[n-1]);
 
