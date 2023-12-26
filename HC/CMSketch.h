@@ -91,7 +91,7 @@ public:
 		// 				sampler[i][index[i]][idx] = point;
 		// 			}
 		// 		}
-			
+
 		// 	// if(sampler[i][index[i]].size() < m) sampler[i][index[i]].push_back(point);
 		// 	// else{
 		// 	// 	if(myRand(1) < m / (double)counter[i][index[i]]){
@@ -107,7 +107,8 @@ public:
 			{
 				counter[i][index[i]]++;
 				name[i][index[i]] = *(uint32_t*)str;
-				if(2 << (2*sampler[i][index[i]].size()) < 1 + counter[i][index[i]]) sampler[i][index[i]].push_back(point);
+				if((2 << (2*sampler[i][index[i]].size())) < counter[i][index[i]] || sampler[i][index[i]].empty()) 
+					sampler[i][index[i]].push_back(point);
 				else{
 					if(myRand(1) < sampler[i][index[i]].size() / (double)counter[i][index[i]]){
 						int idx = myRand(1) * sampler[i][index[i]].size();

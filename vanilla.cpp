@@ -16,9 +16,9 @@ Vanilla::Vanilla(int k_, int d_, int Delta_, double opt_, int sz, bool sketch_) 
     for(int i = 0; i < Depth; i++)
         CM.push_back(CountMap(-1, sketch_, sz / 10));
     CM.resize(Depth);
-    for(int i = 0; i < Depth; i++){
-        Sampler.push_back(SampleMap(&CM[i], coreset_size));
-    }
+    // for(int i = 0; i < Depth; i++){
+    //     Sampler.push_back(SampleMap(&CM[i], coreset_size));
+    // }
     sketch = sketch_;
     maxMem = 0;
 }
@@ -51,7 +51,7 @@ void Vanilla::update(const Point & point, bool insert) {
         vector<int> seq = discrete(point, g);
         if(insert){
             CM[i].ins(&seq[0], d, point);
-            Sampler[i].ins(&seq[0], d, point);
+            // Sampler[i].ins(&seq[0], d, point);
         }
         else{
             CM[i].del(&seq[0], d);
