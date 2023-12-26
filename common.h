@@ -15,6 +15,7 @@
 #include <chrono>
 #include <sys/sysctl.h>
 #include <unistd.h>
+#include <assert.h>
 
 using namespace std;
 

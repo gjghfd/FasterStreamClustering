@@ -149,6 +149,7 @@ int main() {
         }
 
         // generate trace for deletion test
+        /*
         vector<int> trace;
         multiset<int> active;
         for (int i = 0; i < MAX_POINTS * 10; i++) {
@@ -209,8 +210,9 @@ int main() {
                 total_stddis += stddis;
             }
             printf("Deletion test k = %d: avg_latency = %.5lf, p99 latency = %.5lf, dis = %.5lf, stddis = %.5lf\n", \
-            total_avg_latency / TEST_ROUND, total_p99_latency / TEST_ROUND, total_dis / TEST_ROUND, total_stddis / TEST_ROUND);
+            k, total_avg_latency / TEST_ROUND, total_p99_latency / TEST_ROUND, total_dis / TEST_ROUND, total_stddis / TEST_ROUND);
         }
+        //*/
     }
     return 0;
 }

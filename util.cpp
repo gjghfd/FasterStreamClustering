@@ -91,6 +91,8 @@ vector<Point> KMeans(const vector<Point> & points, int k, int d) {
     vector<Point> centers(k);
     vector<double> dis(n);
 
+    #define NUM_TURN 1
+
     // get the first center
     double sum = 0;
     for (int i = 0; i < n; i++) sum += points[i].weight;
@@ -126,6 +128,59 @@ vector<Point> KMeans(const vector<Point> & points, int k, int d) {
                     break;
                 }
             }
+    }
+
+    double mn_dis = squaredDistanceWeighted(points, centers, k, d);
+
+    // repeat multiple times to obtain the minimal-distance initial centers
+    for (int turn = 1; turn < NUM_TURN; turn++) {
+        // reconstruct a center
+        vector<Point> new_centers(k);
+        vector<bool> new_is_center(n);
+
+        // get the first center
+        double sum = 0;
+        for (int i = 0; i < n; i++) sum += points[i].weight;
+        double value = myRand(sum);
+        for (int i = 0; i < n; i++) {
+            value -= points[i].weight;
+            if (value <= 0 || i == n - 1) {
+                // i is the first center
+                for (int j = 0; j < n; j++) new_is_center[j] = (j == i ? true : false);
+                new_centers[0] = points[i];
+                break;
+            }
+        }
+
+        // get other centers
+        for (int i = 1; i < k; i++) {
+            // determine the i-th center
+            double sum = 0;
+            for (int j = 0; j < n; j++)
+                if (!new_is_center[j]) {
+                    dis[j] = squaredDistance(points[j], new_centers, i, d) * points[j].weight;
+                    sum += dis[j];
+                }
+            
+            double value = myRand(sum);
+            for (int j = 0; j < n; j++)
+                if (!new_is_center[j]) {
+                    value -= dis[j];
+                    if (value <= 0 || j == n - 1) {
+                        // choose this point as the i-th center
+                        new_centers[i] = points[j];
+                        new_is_center[j] = true;
+                        break;
+                    }
+                }
+        }
+
+        double dis = squaredDistanceWeighted(points, new_centers, k, d);
+        if (dis < mn_dis) {
+            mn_dis = dis;
+            centers.assign(new_centers.begin(), new_centers.end());
+            is_center.assign(new_is_center.begin(), new_is_center.end());
+        }
     }
 
     // now initial centers are chosen, proceed with k-means
