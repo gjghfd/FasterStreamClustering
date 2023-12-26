@@ -14,6 +14,7 @@ class Vanilla {
     double opt; //prediction of the optimal clustering
     vector<Point> saved_points;
     int coreset_size;
+    bool sketch;
 
     bool has_coreset;
     vector<Point> coreset;
@@ -22,7 +23,7 @@ class Vanilla {
     // unordered_map<int, int> CM[25];
 	// unordered_map<int, Point> Sampler[25][510];
 public:
-    Vanilla(int k_, int d_, int Delta_, double opt_, int sz);
+    Vanilla(int k_, int d_, int Delta_, double opt_, int sz,  bool sketch = false);
     
     void update(const Point & point, bool insert);      // insert or delete a point
     void getCoreset(int sz);

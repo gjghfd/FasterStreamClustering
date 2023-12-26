@@ -29,7 +29,7 @@ struct CountMin{
 
 vector<Point> savedata;
 
-Vanilla::Vanilla(int k_, int d_, int Delta_, double opt_, int sz) {
+Vanilla::Vanilla(int k_, int d_, int Delta_, double opt_, int sz, bool sketch_) {
     n = 0;
     k = k_;
     d = d_;
@@ -38,6 +38,8 @@ Vanilla::Vanilla(int k_, int d_, int Delta_, double opt_, int sz) {
     opt = opt_;
     has_coreset = false;
     coreset_size = sz;
+    for(int i = 0; i < Depth; i++)
+        CM.push_back(CountMap(-1, sketch_));
     CM.resize(Depth);
     for(int i = 0; i < Depth; i++){
         Sampler.push_back(SampleMap(&CM[i], coreset_size));

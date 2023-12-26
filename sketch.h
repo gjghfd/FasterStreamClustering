@@ -3,14 +3,19 @@
 #include "common.h"
 #include "murmur3.h"
 
+
+
 struct CountMap{
 	uint32_t seed;
 	unordered_map<uint32_t, int> cnt;
 	uint64_t maxMem;
+	bool sketch;
 
-	CountMap(uint32_t seed_ = -1){
+	CountMap(uint32_t seed_ = -1, bool sketch_ = false){
 		if(seed_ > 0) seed = seed_;
 		else seed = myRand(1) * (1<<30);
+		sketch = sketch_;
+
 		maxMem  = sizeof(seed);
 	}
 
