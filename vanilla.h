@@ -1,4 +1,6 @@
 #pragma once
+#ifndef _VANILLA_H
+#define _VANILLA_H
 
 #include "common.h"
 #include "sketch.h"
@@ -15,6 +17,7 @@ class Vanilla {
     vector<Point> saved_points;
     int coreset_size;
     bool sketch;
+    uint64_t maxMem;
 
     bool has_coreset;
     vector<Point> coreset;
@@ -32,3 +35,4 @@ public:
     uint64_t getMemoryUsage();                          // compute the current memory usage
     uint64_t getMaxMemoryUsage();                       // compute the max memory usage
 };
+#endif

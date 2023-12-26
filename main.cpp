@@ -12,7 +12,7 @@ Runs all algorithms
 #define TEST_ROUND 3
 #define NUM_DIFF_TEST 10
 
-#define MAX_POINTS 10000
+#define MAX_POINTS 100000
 
 const string input_files[NUM_DATASET] = {"census.txt", "Adult.txt", "Bank.txt", "twitter.txt", "USC.txt"};
 const char *alg_name[NUM_ALG] = {"streamKM++", "vanilla"};
@@ -121,11 +121,11 @@ int main() {
                 }
 
                 // alg1
-                // streamKMplusplus streamKMppclustering(k, d, 100);
-                // runTest(streamKMppclustering, 0, points, testCenters, testDis, used_mem, latency, P99_latency, dis, diff, k, d);
+                streamKMplusplus streamKMppclustering(k, d, 100);
+                runTest(streamKMppclustering, 0, points, testCenters, testDis, used_mem, latency, P99_latency, dis, diff, k, d);
 
                 // alg2
-                Vanilla vanillaclustering(k, d, 1 << ((int)log2(mx) + 1), 1000 / k, 100);
+                Vanilla vanillaclustering(k, d, 1 << ((int)log2(mx) + 1), 200, 100, 1);
                 runTest(vanillaclustering, 1, points, testCenters, testDis, used_mem, latency, P99_latency, dis, diff, k, d);
 
                 total_std_dis += squaredDistance(points, KMeans(points, k, d), k, d);

@@ -2,31 +2,6 @@
 #include "vanilla.h"
 #include "murmur3.h"
 
-const int CMd = 10;
-const int CML = 1000;
-
-int HashFuc(const Point &point, int seed){
-    return 0;
-}
-
-struct CountMin{
-    int buckets[CMd][CML];
-    int seeds[CMd];
-    CountMin(){
-        memset(buckets, 0, sizeof(buckets));
-
-    }
-    void insert(const Point &point, int w){
-        for(int i = 0; i < CMd; i++) buckets[i][HashFuc(point, seeds[i]) % CML] += w;
-    }
-    int query(const Point &point, int w){
-        int minC = 1<<30;
-        for(int i = 0; i < CMd; i++) minC = min(minC, buckets[i][HashFuc(point, seeds[i]) % CML]);
-        return minC;
-    }
-};
-
-
 vector<Point> savedata;
 
 Vanilla::Vanilla(int k_, int d_, int Delta_, double opt_, int sz, bool sketch_) {
@@ -39,11 +14,13 @@ Vanilla::Vanilla(int k_, int d_, int Delta_, double opt_, int sz, bool sketch_) 
     has_coreset = false;
     coreset_size = sz;
     for(int i = 0; i < Depth; i++)
-        CM.push_back(CountMap(-1, sketch_));
+        CM.push_back(CountMap(-1, sketch_, sz / 5));
     CM.resize(Depth);
     for(int i = 0; i < Depth; i++){
         Sampler.push_back(SampleMap(&CM[i], coreset_size));
     }
+    sketch = sketch_;
+    maxMem = 0;
 }
 
 vector<int> discrete(const Point &point, double scal){
@@ -69,7 +46,7 @@ void Vanilla::update(const Point & point, bool insert) {
         int dp = 0;
         vector<int> seq = discrete(point, g);
         if(insert){
-            CM[i].ins(&seq[0], d);
+            CM[i].ins(&seq[0], d, point);
             Sampler[i].ins(&seq[0], d, point);
         }
         else{
@@ -85,7 +62,7 @@ void Vanilla::getCoreset(int sz){
     has_coreset = true;
     coreset.clear();
 
-    printf("begin construction\n");
+    // printf("begin construction\n");
 
     vector<set<uint32_t> > cru;
     vector<int> cru_size;
@@ -97,23 +74,25 @@ void Vanilla::getCoreset(int sz){
     // printf("%d\n", Depth);
 
     for(int i = 1; i < Depth; i++){
-        // printf("%d: ", i);
+        printf("%d: ", i);
         double g = Delta >> i;
-        double T = (d / g) * (d / g) * opt / k; 
+        double T = (d / g) * (d / g) * opt; 
 
 
         double T1 = T / 4, g1 = Delta >> (i - 1);
 
         vector<uint32_t> nonempty = CM[i].getNonempty();
+        sort(nonempty.begin(), nonempty.end()); nonempty.resize(unique(nonempty.begin(), nonempty.end()) - nonempty.begin());
         // for(int j = 0; j < nonempty.size(); j++) printf("%u ", nonempty[j]);
         // putchar('\n');
 
         for(int j = 0; j < nonempty.size(); j++){
             uint32_t curHashValue = nonempty[j];
             if(CM[i].query(curHashValue) > T) continue;
-            // printf("%d\n", CM[i].query(curHashValue));
-            Point pt = Sampler[i].query(curHashValue, 1);
-            // printf("fff\n");
+            // Point pt = Sampler[i].query(curHashValue, 1);
+            Point pt = CM[i].sample(curHashValue);
+
+
             vector<int> seq = discrete(pt, g1);
             if(CM[i-1].query(&seq[0], d) <= T1) continue;
             cru[i].insert(curHashValue);
@@ -127,7 +106,8 @@ void Vanilla::getCoreset(int sz){
     // printf("begin construction\n");
     //debug
     vector<Point> layer[24];
-    printf("n = %d\n",n);
+    // printf("n = %d\n",n);
+    int wrontcnt = 0;
     for(int i = 0; i < n; i++){
         Point cur = savedata[i];
         int cnt = 0, ly;
@@ -137,9 +117,10 @@ void Vanilla::getCoreset(int sz){
             uint32_t dp = CM[j].hash(&seq[0], d);
             if(cru[j].find(dp) != cru[j].end()) cnt ++, layer[j].push_back(cur);
         }
-        if(cnt != 1) puts("wrongwrongwrong");
+        if(cnt != 1) wrontcnt ++;
     }
     double sum_weight = 0;
+    // printf("missed %d\n", wrontcnt);
 
     vector<int> gLayer;
     for(int  i = 0; i < Depth; i++)
@@ -170,8 +151,6 @@ void Vanilla::getCoreset(int sz){
     //     remain_sz --;
     // }
 
-
-
     for(int i = 0; i < Depth; i++){
         if(sample_num[i] == 0) continue;
         vector<uint32_t> cru_vec;
@@ -199,11 +178,13 @@ void Vanilla::getCoreset(int sz){
             int ind = sampleDistribution(distri);
             snum[ind] ++;
         }
+
         for(int j = 0; j < cru_vec.size(); j++){
             int total_size = CM[i].query(cru_vec[j]);
             // printf("%d ", snum[j]);
             for(int t = 0; t < snum[j]; t++){
-                Point pt = Sampler[i].query(cru_vec[j]);
+                // Point pt = Sampler[i].query(cru_vec[j]);
+                Point pt = CM[i].sample(cru_vec[j]);
                 // pt.weight *= sum_weight / cru_weight[i] / (double)sz;
                 pt.weight *= cru_size[i] / (double) sample_num[i];
                 coreset.push_back(pt);
@@ -332,12 +313,15 @@ double Vanilla::calculateKMeans(vector<Point> & centers) {
 }
 
 uint64_t Vanilla::getMemoryUsage() {
+
     uint64_t sum = 0;
-    sum += 2 * sizeof(int);                                   // k, d
+    // vector<SampleMap> Sampler;
+
+    for(int i = 0; i < CM.size(); i++) sum += CM[i].getMemoryUsage();
     // sum += saved_points.size() * (d + 1) * sizeof(double);    // saved_points
     return sum;
 }
 
 uint64_t Vanilla::getMaxMemoryUsage() {
-    return getMemoryUsage();      // the memory usage is always increasing
+    return maxMem = max(maxMem, getMemoryUsage());      // the memory usage is always increasing
 }
