@@ -147,6 +147,70 @@ int main() {
             printf("standard k-means = %.5lf\n\n", total_std_dis / TEST_ROUND);
             fflush(stdout);
         }
+
+        // generate trace for deletion test
+        vector<int> trace;
+        multiset<int> active;
+        for (int i = 0; i < MAX_POINTS * 10; i++) {
+            if (active.size() < MAX_POINTS || myRand(1) >= 0.5) {
+                // insert
+                int idx = myRand(MAX_POINTS);
+                trace.emplace_back(idx);
+                active.insert(idx);
+            } else {
+                // delete
+                int counter = 0;
+                while (++counter <= 10) {
+                    int rd = myRand(MAX_POINTS);
+                    auto iter = active.lower_bound(rd);
+                    int idx = *iter;
+                    if (counter == 10 || idx - rd <= 10) {
+                        trace.emplace_back(-idx - 1);
+                        active.erase(iter);
+                        break;
+                    }
+                }
+            }
+        }
+        vector<Point> final_points;
+        for (auto iter : active) final_points.emplace_back(points[iter]);
+
+        // running
+        for (int k = 5; k <= 15; k += 5) {
+            double total_avg_latency = 0;
+            double total_p99_latency = 0;
+            double total_dis = 0;
+            double total_stddis = 0;
+            for (int round = 1; round <= TEST_ROUND; round++) {
+                Vanilla vanillaclustering(k, d, 1 << ((int)log2(mx) + 1), 200, 100, 1);
+                vector<double> latency(trace.size());
+                int i = 0;
+                for (int p : trace) {
+                    double st_time = getCurrentTime();
+                    if (p >= 0) {
+                        vanillaclustering.update(points[p], true);
+                    } else {
+                        vanillaclustering.update(points[-p-1], false);
+                    }
+                    latency[i++] = getCurrentTime() - st_time;
+                }
+                // process latency
+                sort(latency.begin(), latency.end());
+                double sum = 0;
+                for (double l : latency) sum += l;
+                double avg_latency = sum / (double) trace.size();
+                int p99 = trace.size() - trace.size() / 1000;
+                double p99_latency = latency[p99];
+                double dis = squaredDistance(final_points, vanillaclustering.getClusters(), k, d);
+                double stddis = squaredDistance(final_points, KMeans(final_points, k, d), k, d);
+                total_avg_latency += avg_latency;
+                total_p99_latency += p99_latency;
+                total_dis += dis;
+                total_stddis += stddis;
+            }
+            printf("Deletion test k = %d: avg_latency = %.5lf, p99 latency = %.5lf, dis = %.5lf, stddis = %.5lf\n", \
+            total_avg_latency / TEST_ROUND, total_p99_latency / TEST_ROUND, total_dis / TEST_ROUND, total_stddis / TEST_ROUND);
+        }
     }
     return 0;
 }
