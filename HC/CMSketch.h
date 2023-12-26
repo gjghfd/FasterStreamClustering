@@ -70,6 +70,36 @@ public:
 	void Insert(char * str, int len, const Point &point)
 	{
 		//printf("the CM bucket is =%d\n", w);
+		// int min_value = MAX_CNT, where = 0, temp;
+		// for(int i = 0; i < d; i++){
+		// 	index[i] = (bobhash[i]->run(str,len)) % w;
+		// 	temp = counter[i][index[i]];
+		// 	// name[i][index[i]] = *(uint32_t*)str;
+		// 	min_value = temp < min_value ? temp : min_value;
+		// 	where = temp == min_value ? i : where;
+		// }
+		// if(min_value == MAX_CNT) return;
+		// for(int i = 0; i < d; i++){
+		// 	if(counter[i][index[i]] > min_value) continue;
+		// 	counter[i][index[i]]++;
+		// 	name[i][index[i]] = *(uint32_t*)str;
+
+		// 	if(2 << (2*sampler[i][index[i]].size()) < 1 + counter[i][index[i]]) sampler[i][index[i]].push_back(point);
+		// 		else{
+		// 			if(myRand(1) < sampler[i][index[i]].size() / (double)counter[i][index[i]]){
+		// 				int idx = myRand(1) * sampler[i][index[i]].size();
+		// 				sampler[i][index[i]][idx] = point;
+		// 			}
+		// 		}
+			
+		// 	// if(sampler[i][index[i]].size() < m) sampler[i][index[i]].push_back(point);
+		// 	// else{
+		// 	// 	if(myRand(1) < m / (double)counter[i][index[i]]){
+		// 	// 		int idx = myRand(1) * m;
+		// 	// 		sampler[i][index[i]][idx] = point;
+		// 	// 	}
+		// 	// }
+		// }
 		for(int i = 0; i < d; i++)
 		{
 			index[i] = (bobhash[i]->run(str,len)) % w;
@@ -77,15 +107,14 @@ public:
 			{
 				counter[i][index[i]]++;
 				name[i][index[i]] = *(uint32_t*)str;
-				if(sampler[i][index[i]].size() < m) sampler[i][index[i]].push_back(point);
+				if(2 << (2*sampler[i][index[i]].size()) < 1 + counter[i][index[i]]) sampler[i][index[i]].push_back(point);
 				else{
-					if(myRand(1) < m / counter[i][index[i]]){
-						int idx = myRand(1) * m;
+					if(myRand(1) < sampler[i][index[i]].size() / (double)counter[i][index[i]]){
+						int idx = myRand(1) * sampler[i][index[i]].size();
 						sampler[i][index[i]][idx] = point;
 					}
 				}
 			}
-
 		}
 	}
 	double Query( char *str, int len)

@@ -1,6 +1,6 @@
 #include "common.h"
 #include "vanilla.h"
-#include "murmur3.h"
+#define subSample  150000
 
 vector<Point> savedata;
 
@@ -14,7 +14,7 @@ Vanilla::Vanilla(int k_, int d_, int Delta_, double opt_, int sz, bool sketch_) 
     has_coreset = false;
     coreset_size = sz;
     for(int i = 0; i < Depth; i++)
-        CM.push_back(CountMap(-1, sketch_, sz / 5));
+        CM.push_back(CountMap(-1, sketch_, sz / 10));
     CM.resize(Depth);
     for(int i = 0; i < Depth; i++){
         Sampler.push_back(SampleMap(&CM[i], coreset_size));
@@ -42,7 +42,11 @@ void Vanilla::update(const Point & point, bool insert) {
     int InsOrDel = insert ? 1 : -1;
     n += InsOrDel;
     for(int i = 0; i < Depth; i++){
-        int g = Delta >> i;
+        double g = Delta >> i;
+        double T = (d / g) * (d / g) * opt; 
+        int Pr = max(T/subSample, 1.0);
+        // printf("%d %d %lf\n", i, Pr, T);
+        if(MurmurHash3_x86_32((int*)&point.value[0], d, 998244353) % Pr) continue; 
         int dp = 0;
         vector<int> seq = discrete(point, g);
         if(insert){
@@ -77,9 +81,10 @@ void Vanilla::getCoreset(int sz){
         printf("%d: ", i);
         double g = Delta >> i;
         double T = (d / g) * (d / g) * opt; 
-
+        int Pr = max(T/subSample,1.0);
 
         double T1 = T / 4, g1 = Delta >> (i - 1);
+        int Pr1 = max(T1/subSample,1.0);
 
         vector<uint32_t> nonempty = CM[i].getNonempty();
         sort(nonempty.begin(), nonempty.end()); nonempty.resize(unique(nonempty.begin(), nonempty.end()) - nonempty.begin());
@@ -88,13 +93,13 @@ void Vanilla::getCoreset(int sz){
 
         for(int j = 0; j < nonempty.size(); j++){
             uint32_t curHashValue = nonempty[j];
-            if(CM[i].query(curHashValue) > T) continue;
+            if(CM[i].query(curHashValue) * Pr > T) continue;
             // Point pt = Sampler[i].query(curHashValue, 1);
             Point pt = CM[i].sample(curHashValue);
 
 
             vector<int> seq = discrete(pt, g1);
-            if(CM[i-1].query(&seq[0], d) <= T1) continue;
+            if(CM[i-1].query(&seq[0], d) * Pr1 <= T1) continue;
             cru[i].insert(curHashValue);
             cru_size[i] += CM[i].query(curHashValue);
             // cru_weight[i] += CM[i].query(curHashValue) / T;

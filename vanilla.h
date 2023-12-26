@@ -3,6 +3,7 @@
 #define _VANILLA_H
 
 #include "common.h"
+#include "murmur3.h"
 #include "sketch.h"
 
 // Template clustering saves every point and performs KMeans++ at the end.
