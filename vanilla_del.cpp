@@ -1,6 +1,6 @@
 #include "common.h"
-#include "vanilla.h"
-#define subSample  100
+#include "vanilla_del.h"
+#define subSample  100000
 
 vector<Point> savedata;
 
@@ -14,7 +14,7 @@ Vanilla::Vanilla(int k_, int d_, int Delta_, double opt_, int sz, bool sketch_) 
     has_coreset = false;
     coreset_size = sz;
     for(int i = 0; i < Depth; i++)
-        CM.push_back(CountMap(-1, sketch_, sz / 10));
+        CM.push_back(CountMapDel(-1, sketch_, sz / 10));
     CM.resize(Depth);
     // for(int i = 0; i < Depth; i++){
     //     Sampler.push_back(SampleMap(&CM[i], coreset_size));
@@ -45,12 +45,10 @@ void Vanilla::update(const Point & point, bool insert) {
         double g = Delta >> i;
         double T = (d / g) * (d / g) * opt; 
         int Pr = max(T/subSample, 1.0);
-        // int Pr = max(d/g/subSample, 1.0);
         // printf("%d %d %lf\n", i, Pr, T);
-        if(MurmurHash3_x86_32((int*)&point.value[0], d, 1403) % Pr) continue; 
+        if(MurmurHash3_x86_32((int*)&point.value[0], d, 998244353) % Pr) continue; 
         int dp = 0;
         vector<int> seq = discrete(point, g);
-        // MM[i][seq] = 1;
         if(insert){
             CM[i].ins(&seq[0], d, point);
             // Sampler[i].ins(&seq[0], d, point);
@@ -68,7 +66,7 @@ void Vanilla::getCoreset(int sz){
     has_coreset = true;
     coreset.clear();
 
-    printf("begin construction\n");
+    // printf("begin construction\n");
 
     vector<set<uint32_t> > cru;
     vector<int> cru_size;
@@ -79,20 +77,17 @@ void Vanilla::getCoreset(int sz){
 
     // printf("%d\n", Depth);
 
-    for(int i = 0; i < Depth; i++){
-        // printf("%d\n", MM[i].size());
-        // printf("%d: ", i);
+    for(int i = 1; i < Depth; i++){
+        printf("%d: ", i);
         double g = Delta >> i;
         double T = (d / g) * (d / g) * opt; 
         int Pr = max(T/subSample,1.0);
-        // int Pr = max(d/g/subSample,1.0);
-        printf("%d %d %lf\n", i, Pr, T);
-        double T1 = T / 4, g1 = g * 2;
+
+        double T1 = T / 4, g1 = Delta >> (i - 1);
         int Pr1 = max(T1/subSample,1.0);
 
         vector<uint32_t> nonempty = CM[i].getNonempty();
         sort(nonempty.begin(), nonempty.end()); nonempty.resize(unique(nonempty.begin(), nonempty.end()) - nonempty.begin());
-        // printf("%d\n", nonempty.size());
         // for(int j = 0; j < nonempty.size(); j++) printf("%u ", nonempty[j]);
         // putchar('\n');
 
@@ -102,10 +97,11 @@ void Vanilla::getCoreset(int sz){
             // Point pt = Sampler[i].query(curHashValue, 1);
             Point pt = CM[i].sample(curHashValue);
 
+
             vector<int> seq = discrete(pt, g1);
-            if(i > 0 && CM[i-1].query(&seq[0], d) * Pr1 <= T1) continue;
+            if(CM[i-1].query(&seq[0], d) * Pr1 <= T1) continue;
             cru[i].insert(curHashValue);
-            cru_size[i] += CM[i].query(curHashValue) * Pr;
+            cru_size[i] += CM[i].query(curHashValue);
             // cru_weight[i] += CM[i].query(curHashValue) / T;
         }
         cru_weight[i] = 1/T;
@@ -114,20 +110,20 @@ void Vanilla::getCoreset(int sz){
 
     // printf("begin construction\n");
     //debug
-    // vector<Point> layer[24];
+    vector<Point> layer[24];
     // printf("n = %d\n",n);
-    // int wrontcnt = 0;
-    // for(int i = 0; i < n; i++){
-    //     Point cur = savedata[i];
-    //     int cnt = 0, ly;
-    //     for(int j = 0; j < Depth; j++){
-    //         double g = Delta >> j;
-    //         vector<int> seq = discrete(cur, g);
-    //         uint32_t dp = CM[j].hash(&seq[0], d);
-    //         if(cru[j].find(dp) != cru[j].end()) cnt ++, layer[j].push_back(cur);
-    //     }
-    //     if(cnt != 1) wrontcnt ++;
-    // }
+    int wrontcnt = 0;
+    for(int i = 0; i < n; i++){
+        Point cur = savedata[i];
+        int cnt = 0, ly;
+        for(int j = 0; j < Depth; j++){
+            double g = Delta >> j;
+            vector<int> seq = discrete(cur, g);
+            uint32_t dp = CM[j].hash(&seq[0], d);
+            if(cru[j].find(dp) != cru[j].end()) cnt ++, layer[j].push_back(cur);
+        }
+        if(cnt != 1) wrontcnt ++;
+    }
     double sum_weight = 0;
     // printf("missed %d\n", wrontcnt);
 
@@ -162,11 +158,6 @@ void Vanilla::getCoreset(int sz){
 
     for(int i = 0; i < Depth; i++){
         if(sample_num[i] == 0) continue;
-
-        double g = Delta >> i;
-        double T = (d / g) * (d / g) * opt; 
-        int Pr = max(T/subSample,1.0);
-
         vector<uint32_t> cru_vec;
         vector<int> snum;
         int remain_sz = sample_num[i];
@@ -199,11 +190,8 @@ void Vanilla::getCoreset(int sz){
             for(int t = 0; t < snum[j]; t++){
                 // Point pt = Sampler[i].query(cru_vec[j]);
                 Point pt = CM[i].sample(cru_vec[j]);
-                // pt.weight *= n / (double)sz;
-                pt.weight *= sum_weight / cru_weight[i] / (double)sz;
-                // pt.weight *= cru_size[i] * Pr / (double) sample_num[i];
-                // pt.weight *=  n * total_size / (double)snum[j];
-                // pt.weight *=  sum_weight / (double)(cru_weight[i]) * Pr / sz;
+                // pt.weight *= sum_weight / cru_weight[i] / (double)sz;
+                pt.weight *= cru_size[i] / (double) sample_num[i];
                 coreset.push_back(pt);
                 // for(int  tt = 0; tt < d; tt++) printf("%lf ",pt.value[tt]); putchar('\n');
             }
@@ -222,10 +210,6 @@ void Vanilla::getCoreset(int sz){
 
     savedata.clear();
     printf("coreset size %d\n", (int)coreset.size());
-    double sumw = 0;
-    for(int i = 0; i < coreset.size(); i++) sumw+=coreset[i].weight;
-    printf("total weight: %lf\n", sumw);
-    for(int i = 0; i < coreset.size(); i++) coreset[i].weight *= n / sumw;
 
     // while(sz--){
 

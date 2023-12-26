@@ -11,6 +11,13 @@
 
 using namespace std;
 
+struct SampleS{
+	Point cell[100];
+	void insert(Point &point, int w){
+		
+	}
+}
+
 class CMSketch
 {	
 private:
@@ -18,7 +25,7 @@ private:
 	int index[MAX_HASH_NUM];
 	int *counter[MAX_HASH_NUM];
 	uint32_t *name[MAX_HASH_NUM];
-	vector<Point> *sampler[MAX_HASH_NUM];
+	SampleS *sampler[MAX_HASH_NUM];
 	short *pointer[MAX_HASH_NUM];
 	int w, d, m;
 	int MAX_CNT;
@@ -39,7 +46,7 @@ public:
 		{
 			counter[i] = new int[w];
 			name[i] = new uint32_t[w];
-			sampler[i] = new vector<Point>[w];
+			sampler[i] = new SampleS[w];
 			pointer[i] = new short[w];
 			memset(counter[i], 0, sizeof(int) * w);
 			memset(name[i], 0, sizeof(uint32_t) * w);
@@ -69,16 +76,45 @@ public:
 	}
 	void Insert(char * str, int len, const Point &point)
 	{
-		
+		//printf("the CM bucket is =%d\n", w);
+		// int min_value = MAX_CNT, where = 0, temp;
+		// for(int i = 0; i < d; i++){
+		// 	index[i] = (bobhash[i]->run(str,len)) % w;
+		// 	temp = counter[i][index[i]];
+		// 	// name[i][index[i]] = *(uint32_t*)str;
+		// 	min_value = temp < min_value ? temp : min_value;
+		// 	where = temp == min_value ? i : where;
+		// }
+		// if(min_value == MAX_CNT) return;
+		// for(int i = 0; i < d; i++){
+		// 	if(counter[i][index[i]] > min_value) continue;
+		// 	counter[i][index[i]]++;
+		// 	name[i][index[i]] = *(uint32_t*)str;
+
+		// 	if(2 << (2*sampler[i][index[i]].size()) < 1 + counter[i][index[i]]) sampler[i][index[i]].push_back(point);
+		// 		else{
+		// 			if(myRand(1) < sampler[i][index[i]].size() / (double)counter[i][index[i]]){
+		// 				int idx = myRand(1) * sampler[i][index[i]].size();
+		// 				sampler[i][index[i]][idx] = point;
+		// 			}
+		// 		}
+
+		// 	// if(sampler[i][index[i]].size() < m) sampler[i][index[i]].push_back(point);
+		// 	// else{
+		// 	// 	if(myRand(1) < m / (double)counter[i][index[i]]){
+		// 	// 		int idx = myRand(1) * m;
+		// 	// 		sampler[i][index[i]][idx] = point;
+		// 	// 	}
+		// 	// }
+		// }
 		for(int i = 0; i < d; i++)
 		{
 			index[i] = (bobhash[i]->run(str,len)) % w;
 			if(counter[i][index[i]] != MAX_CNT)
 			{
 				counter[i][index[i]]++;
-				// if(counter[i][index[i]] > 0 && name[i][index[i]] != *(uint32_t*)str) puts("collision");
 				name[i][index[i]] = *(uint32_t*)str;
-				if(((2 << ( sampler[i][index[i]].size())) < counter[i][index[i]] || sampler[i][index[i]].empty()) && sampler[i][index[i]].size() < m)
+				if(((2 << (sampler[i][index[i]].size())) < counter[i][index[i]] || sampler[i][index[i]].empty()) && sampler[i][index[i]].size() < m)
 					sampler[i][index[i]].push_back(point);
 				else{
 					if(myRand(1) < sampler[i][index[i]].size() / (double)counter[i][index[i]]){

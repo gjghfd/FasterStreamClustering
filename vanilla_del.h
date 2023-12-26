@@ -23,8 +23,8 @@ class Vanilla {
     bool has_coreset;
     vector<Point> coreset;
     vector<CountMap> CM;
-    // vector<SampleMap> Sampler;
-    map<vector<int>, int> MM[25];
+    vector<SampleMap> Sampler;
+    // unordered_map<int, int> CM[25];
 	// unordered_map<int, Point> Sampler[25][510];
 public:
     Vanilla(int k_, int d_, int Delta_, double opt_, int sz,  bool sketch = false);

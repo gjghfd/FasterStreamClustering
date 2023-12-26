@@ -18,7 +18,7 @@ struct CountMap{
 		else seed = myRand(1) * (1<<30);
 		sketch = sketch_;
 
-		SKcnt = new CMSketch(32, 4, _m);
+		SKcnt = new CMSketch(64, 4, _m);
 
 	}
 
@@ -28,7 +28,6 @@ struct CountMap{
 
 	void ins(int *key, int len, const Point &point){
 		uint32_t hashValue = hash(key, len);
-		assert(*(uint32_t*)((char*)&hashValue) == hashValue);
 		if(sketch){
 			SKcnt -> Insert((char*)&hashValue, 4, point);
 		}
@@ -39,7 +38,6 @@ struct CountMap{
 
 	void del(int *key, int len){
 		uint32_t hashValue = hash(key, len);
-		assert(*(uint32_t*)((char*)&hashValue) == hashValue);
 		if(sketch){
 			SKcnt -> Delete((char*)&hashValue, 4);
 		}
@@ -50,7 +48,6 @@ struct CountMap{
 
 	int query(int *key, int len){
 		uint32_t hashValue = hash(key, len);
-		assert(*(uint32_t*)((char*)&hashValue) == hashValue);
 		if(sketch){
 			return SKcnt -> Query((char*)&hashValue, 4);
 		}
@@ -103,79 +100,6 @@ struct CountMap{
 	}
 };
 
-struct SampleMap{
-	uint32_t seed;
-	vector<unordered_map<uint32_t, Point> > cnt;
-	uint64_t maxMem;
-	CountMap* CM;
-	int sample_size;
 
-	SampleMap(CountMap* CM_ = 0, int len_ = 1, uint32_t seed_ = -1){
-		if(seed_ > 0) seed = seed_;
-		else seed = myRand(1) * (1<<30);
-		CM = CM_;
-		sample_size = len_;
-		cnt.resize(sample_size);
-
-		maxMem  = sizeof(seed);
-	}
-
-	void init(CountMap* CM_ = 0, int len_ = 1, uint32_t seed_ = -1){
-		if(seed_ > 0) seed = seed_;
-		else seed = myRand(1) * (1<<30);
-		CM = CM_;
-		sample_size = len_;
-		cnt.resize(sample_size);
-
-		maxMem  = sizeof(seed);
-	}
-
-	void ins(int *key, int len, const Point &point){
-		uint32_t hashValue = CM -> hash(key, len);
-		int sz = CM -> query(hashValue);
-		for(int i = 0; i < sample_size; i++)
-			if(myRand(1) <= 1.0 / sz || cnt[i].find(hashValue) == cnt[i].end()) 
-				cnt[i][hashValue] = point;
-	}
-
-	void del(int *key, int len){
-		// uint32_t hashValue = MurmurHash3_x86_32(key, len, seed);
-		// if((--cnt[hashValue]) == 0) cnt.delete(hashValue);
-	}
-
-	Point query(int *key, int len, int repl = 0){
-		uint32_t hashValue = CM -> hash(key, len);
-		if(!sample_size){
-			puts("ffsfsfssss");
-			return Point();
-		}
-		
-		auto loc = cnt[sample_size - 1].find(hashValue);
-		Point ret;
-		if(loc != cnt[sample_size - 1].end()) ret = loc->second;
-		if(!repl) sample_size --;
-		return ret;
-	}
-
-	Point query(int32_t hashValue, int repl = 0){
-		// if(!repl) printf("%d\n", sample_size);
-		// uint32_t hashValue = CM -> hash(key, len);
-		if(!sample_size){
-			puts("ffsfsfssss");
-			return Point();
-		}
-		
-		auto loc = cnt[sample_size - 1].find(hashValue);
-		Point ret;
-		if(loc != cnt[sample_size - 1].end()) ret = loc->second;
-		else puts("ffffwwwww");
-		if(!repl) sample_size --;
-		return ret;
-	}
-
-	uint64_t getMemoryUsage(){
-		return 0;
-	}
-};
 
 #endif
