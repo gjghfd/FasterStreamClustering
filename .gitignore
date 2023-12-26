@@ -1,3 +1,5 @@
 main
 kmeans
 .vscode
+.DS_Store
+dataset/census.txt

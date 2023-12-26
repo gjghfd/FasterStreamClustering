@@ -139,6 +139,7 @@ streamKMplusplus::streamKMplusplus(int k_, int d_, int m_) {
     k = k_;
     d = d_;
     m = m_;
+    hasCoreset = false;
     maxMemUsage = 0;
 }
 
@@ -180,41 +181,39 @@ void streamKMplusplus::update(const Point & point, bool insert) {
     }
 
     maxMemUsage = max(maxMemUsage, getMemoryUsage());
+    hasCoreset = false;
+}
+
+void streamKMplusplus::getCoreset() {
+    coreset.clear();
+    for (auto & vec : buckets)
+        if (vec.size()) {
+            for (auto & p : vec) coreset.emplace_back(p);
+        }
+
+    // reduce to m points
+    findCoreset(coreset);
+
+    hasCoreset = true;
 }
 
 vector<Point> streamKMplusplus::getClusters() {
-    vector<Point> points;
-    for (auto & vec : buckets)
-        if (vec.size()) {
-            for (auto & p : vec) points.emplace_back(p);
-        }
-    
-    // reduce to m points
-    findCoreset(points);
+    if (!hasCoreset) getCoreset();
 
-    vector<Point> centers = KMeans(points, k, d);
-
-    return centers;
+    return KMeans(coreset, k, d);
 }
 
 double streamKMplusplus::calculateKMeans(vector<Point> & centers) {
-    int k = centers.size();
-    vector<Point> points;
-    for (auto & vec : buckets)
-        if (vec.size()) {
-            for (auto & p : vec) points.emplace_back(p);
-        }
-
-    // reduce to m points
-    findCoreset(points);
-    
-    return squaredDistanceWeighted(points, centers, k, d);
+    if (!hasCoreset) getCoreset();    
+    return squaredDistanceWeighted(coreset, centers, k, d);
 }
 
 uint64_t streamKMplusplus::getMemoryUsage() {
     uint64_t sum = 0;
     sum += 3 * sizeof(int);                                                     // k, d, m
     for (auto & vec : buckets) sum += vec.size() * (d + 1) * sizeof(double);    // buckets
+    sum += sizeof(bool);                                                        // hasCoreset
+    sum += coreset.size() * (d + 1) * sizeof(double);                           // coreset
     return sum;
 }
 

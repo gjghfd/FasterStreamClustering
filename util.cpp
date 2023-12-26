@@ -1,6 +1,6 @@
 #include "common.h"
 
-static mt19937 mt(time(0));
+static mt19937 mt(19260817);
 
 double myRand(double interval) {
     // return a random value in [0, interval]

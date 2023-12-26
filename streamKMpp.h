@@ -10,12 +10,16 @@ class streamKMplusplus {
     uint64_t maxMemUsage;
     vector<vector<Point>> buckets;  // the i-th bucket (i>=1) holds m points that represents 2^(i-1)*m points in the data stream
 
+    bool hasCoreset;
+    vector<Point> coreset;
+
 public:
     streamKMplusplus(int k_, int d_, int m_);
 
     void update(const Point & point, bool insert);      // insert or delete a point
     vector<Point> getClusters();                        // return the cluster centers
-    double calculateKMeans(vector<Point> & centers);          // calculate the k-means when using given points as centers
+    double calculateKMeans(vector<Point> & centers);    // calculate the k-means when using given points as centers
+    void getCoreset();
     uint64_t getMemoryUsage();                          // compute the current memory usage
     uint64_t getMaxMemoryUsage();                       // compute the max memory usage
 
