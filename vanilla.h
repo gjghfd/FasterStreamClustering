@@ -7,6 +7,7 @@
 class Vanilla {
     int k;  // number of clusters
     int d;  // dimension
+    int n;
     int Delta; //precision
     int Depth;
     double opt; //prediction of the optimal clustering
@@ -15,6 +16,9 @@ class Vanilla {
 
     bool has_coreset;
     vector<Point> coreset;
+    unordered_map<int, int> CM[25];
+	unordered_map<int, Point> Sampler[25][510];
+	set<int> cru[25];
 public:
     Vanilla(int k_, int d_, int Delta_, double opt_, int sz);
     

@@ -33,8 +33,11 @@ void runTest(T & clustering, int idx, vector<Point> & points, vector<Point> & te
     }
     used_time[idx] = getCurrentTime() - st_time;
     used_mem[idx] = clustering.getMaxMemoryUsage();
-    dis[idx] = squaredDistance(points, clustering.getClusters(), k, d);
+    vector<Point> clusters = clustering.getClusters();
+    dis[idx] = squaredDistance(points, clusters, k, d);
     diff[idx] = fabs(clustering.calculateKMeans(testCenters) - testDis) / testDis;
+
+    printf("%.5lf %.5lf %.5lf\n", clustering.calculateKMeans(clusters), dis[idx], fabs(clustering.calculateKMeans(clusters) - dis[idx]) / dis[idx]);
 }
 
 int main() {
@@ -53,8 +56,9 @@ int main() {
         }
 
         fscanf(input, "%d%d", &n, &d);
+        n /= 10;
         double mx = -1e18, mn = 1e18;
-        while (n--) {
+        for (int j = 0; j < n; j++) {
             Point p;
             p.weight = 1;
             p.value.resize(d);
@@ -66,6 +70,7 @@ int main() {
             points.emplace_back(p);
         }
 
+        printf("max %lf\n", mx);
         fclose(input);
 
         // start running
@@ -93,11 +98,11 @@ int main() {
                 double testDis = squaredDistance(points, testCenters, k, d);
   
                 // alg1
-                streamKMplusplus streamKMppclustering(k, d, 20);
+                streamKMplusplus streamKMppclustering(k, d, 100);
                 runTest(streamKMppclustering, 0, points, testCenters, testDis, used_mem, used_time, dis, diff, k, d);
 
                 // alg2
-                Vanilla vanillaclustering(k, d, 1 << ((int)log2(mx) + 1), 1000, 100);
+                Vanilla vanillaclustering(k, d, 1 << ((int)log2(mx) + 1), 1000 / k, 100);
                 runTest(vanillaclustering, 1, points, testCenters, testDis, used_mem, used_time, dis, diff, k, d);
 
                 for (int i = 0; i < NUM_ALG; i++) {

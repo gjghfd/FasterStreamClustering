@@ -1,5 +1,6 @@
 #include "common.h"
 #include "vanilla.h"
+#include "murmur3.h"
 
 const int CMd = 10;
 const int CML = 1000;
@@ -26,8 +27,10 @@ struct CountMin{
 };
 
 
+vector<Point> savedata;
 
 Vanilla::Vanilla(int k_, int d_, int Delta_, double opt_, int sz) {
+    n = 0;
     k = k_;
     d = d_;
     Delta = Delta_;
@@ -37,8 +40,6 @@ Vanilla::Vanilla(int k_, int d_, int Delta_, double opt_, int sz) {
     coreset_size = sz;
 }
 
-map<vector<int>, int> CM;
-map<vector<int>, Point> Sampler[1010];
 
 void Vanilla::update(const Point & point, bool insert) {
     if (point.weight <= 0) {
@@ -49,33 +50,118 @@ void Vanilla::update(const Point & point, bool insert) {
     }
 
     int InsOrDel = insert ? 1 : -1;
+    n += InsOrDel;
     for(int i = 0; i < Depth; i++){
         int g = Delta >> i;
-        vector<int> dp;
-        for(int j = 0; j < d; j++) dp.push_back(int(point.value[i] / g));
-        int curSize = (CM[dp] += InsOrDel);
-        for(int i = 0; i < coreset_size; i++)
-           if(myRand(1) * curSize < 1) Sampler[i][dp] = point;
+        int dp = 0;
+        vector<int> seq;
+        for(int j = 0; j < d; j++)
+             seq.push_back(int(point.value[j] / g));
+        dp = MurmurHash3_x86_32(&seq[0], d, 19260817);
+        int curSize = (CM[i][dp] += InsOrDel);
+        for(int j = 0; j < coreset_size; j++)
+           if(myRand(1) < 1.0 / curSize){
+                Sampler[i][j][dp] = point;
+            }
     }
+    savedata.push_back(point);
 }
+
 
 void Vanilla::getCoreset(int sz){
     has_coreset = true;
     coreset.clear();
-    for(int i = 1; i < sz; i++){
-        int cur = i % (Depth - 1) + 1, gi = Delta >> cur;
-        double Ti = (d / gi) * (d / gi) * opt / k;
-        for (const auto& kv : CM) {
-            if(kv.second == 0 || kv.second > Ti) continue;
-            double Ti1 = Ti / 4, gi1 = gi << 1;
-            Point pt = Sampler[i][kv.first];
-            vector<int> dp;
-            for(int j = 0; j < d; j++) dp.push_back(int(pt.value[i] / gi1));
-            if(CM[dp] <= Ti1) continue;
-            pt.weight /= sz;
+
+    // printf("begin construction\n");
+    int tt = 0;
+    while(coreset.size() < sz){
+        tt++;
+        vector<Point> candi;
+        for(int cur = 1; cur < Depth; cur++){
+            // printf("%d\n", CM[cur].size());
+            double gi = Delta >> cur;
+            double Ti = (d / gi) * (d / gi) * opt / k;
+            // printf("%d %lf\n", cur, Ti);
+            int flg = 0;
+            vector<Point> sampled;
+            for (const auto& kv : CM[cur]) {
+                // printf("%d ", kv.second);
+                if(kv.second == 0 || kv.second > Ti){
+                    // CM[cur].delete(kv.first);
+                    continue;
+                }
+                double Ti1 = Ti / 4, gi1 = Delta >> (cur - 1);
+                Point pt = Sampler[cur][tt][kv.first];
+                int dp = 0;
+                vector<int> seq;
+                for(int j = 0; j < d; j++)
+                     seq.push_back(int(pt.value[j] / gi1));
+                dp = MurmurHash3_x86_32(&seq[0], d, 19260817);
+                    // dp.push_back(int(pt.value[j] / gi1));
+                if(CM[cur-1][dp] <= Ti1){
+                    // CM[cur].delete(kv.first);
+                    continue;
+                }
+                cru[cur].insert(kv.first);
+                sampled.push_back(pt);
+            }
+            // putchar('\n');
+            if(sampled.empty()) continue;
+            candi.push_back(sampled[(int)myRand(sampled.size())]);
+        }
+                break;
+        for(int j = 0; j < candi.size() && coreset.size() < sz; j++){
+            Point pt = candi[j];
+            pt.weight *= n / (double)sz;
             coreset.push_back(pt);
         }
+        
     }
+    // puts("ffffff");
+    vector<Point> layer[25];
+    for(int i = 0; i < n; i++){
+        Point cur = savedata[i];
+        int cnt = 0, ly;
+        for(int j = 0; j < Depth; j++){
+            int dp = 0, g = Delta >> j;
+            vector<int> seq;
+            for(int z = 0; z < d; z++)
+                 seq.push_back(int(cur.value[z] / g));
+            dp = MurmurHash3_x86_32(&seq[0], d, 19260817);
+            if(cru[j].find(dp) != cru[j].end()) cnt ++, layer[j].push_back(cur);
+        }
+        if(cnt == 1) continue;
+        for(int j = 0; j < Depth; j++){
+            int dp = 0, g = Delta >> j;
+            vector<int> seq;
+            for(int z = 0; z < d; z++)
+                 seq.push_back(int(cur.value[z] / g));
+            dp = MurmurHash3_x86_32(&seq[0], d, 19260817);
+            printf("%d ", CM[j][dp]);
+            // if(cru[j].find(dp) != cru[j].end()) cnt ++, layer[j].push_back(cur);
+        }
+        // puts("");
+    }
+    int ttt = 0; 
+    vector<int> wt; int cs = 0; wt.resize(Depth);
+    while(cs < sz){
+        int cur = (ttt ++) % Depth;
+        if(layer[cur].empty()) continue;
+        wt[cur] ++; cs++;
+
+        // Point pt = layer[cur][(int)myRand(layer[cur].size())];
+        // pt.weight *= n / (double)sz;
+        // coreset.push_back(pt);
+    }
+    while(coreset.size() < sz){
+        int cur = (ttt ++) % Depth;
+        if(layer[cur].empty()) continue;
+        
+        Point pt = layer[cur][(int)myRand(layer[cur].size())];
+        pt.weight *= layer[cur].size() / (double)wt[cur];
+        coreset.push_back(pt);
+    }
+    // printf("\t coreset size %d %d\n", sz, (int)coreset.size());
 }
 
 vector<Point> Vanilla::getClusters() {

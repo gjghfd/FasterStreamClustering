@@ -9,6 +9,8 @@
 #include <ctime>
 #include <cmath>
 #include <map>
+#include <unordered_map>
+#include <set>
 #include <vector>
 #include <sys/sysctl.h>
 #include <unistd.h>
