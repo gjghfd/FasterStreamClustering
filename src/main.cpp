@@ -15,7 +15,7 @@ Runs all algorithms
 #define MAX_POINTS 50000
 
 const string input_files[NUM_DATASET] = {"USC.txt", "Adult.txt", "Bank.txt", "twitter.txt"};
-const char *alg_name[NUM_ALG] = {"streamKM++", "ours"};
+const char *alg_name[NUM_ALG] = {"streamKM++", "Song Alg"};
 
 // get current time in ms
 static struct timespec base_time;
@@ -68,7 +68,7 @@ int main() {
 
         // prepare inputs
 
-        string path = "dataset/" + input_files[dataset];
+        string path = "../dataset/" + input_files[dataset];
         FILE *input = fopen(path.c_str(), "r");
         if (input == NULL) {
             throw runtime_error("Cannot open input file.");
@@ -93,7 +93,7 @@ int main() {
         fclose(input);
 
         // start running
-        int k = 10, m =500;
+        int k = 10, m = 500;
 
         printf("----- Running on Dataset %s (%d points) with k = %d, m = %d -----\n", input_files[dataset].c_str(), n, k, m);
 

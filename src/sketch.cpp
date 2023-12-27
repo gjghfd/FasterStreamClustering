@@ -2,10 +2,6 @@
 
 #include "common.h"
 
-
-
-
-
 // Template clustering saves every point and performs KMeans++ at the end.
 
 class TempClustering {

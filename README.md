@@ -1,11 +1,24 @@
 # FasterStreamClustering
-This repo aims to develop some efficient and effective streaming clustering algorithms and compare them with the state-of-the-art algorithms such as StreamKM++.
+This repo implements a optimized version of the streaming clustering algorithm proposed in [1].
+We compare the implementation with the state-of-the-art algorithms such as StreamKM++ [2].
 
 ### Usage
-We only support MacOS and Linux currently.
+We only support Linux and MacOS currently.
 ```
 cd src
 make
 ./main
 ```
 Then you can see results printed in the command line.
+
+### TODO
+
+- Support dynamic gird partition
+- Replace CountMin Sketch with Elastic Skecth
+
+
+### References
+
+[1] Zhao Song, Lin F. Yang, Peilin Zhong (2018) Sensitivity Sampling Over Dynamic Geometric Data Streams with Applications to k-Clustering. CoRR abs/1802.00459.
+
+[2] Ackermann MR, Ma¨rtens M, Raupach C, Swierkot K, Lammersen C, Sohler C (2012) StreamKM++: a clustering algorithm for data streams. J Exp Algorithmics 17:2.4:2.1–2.4:2.30.

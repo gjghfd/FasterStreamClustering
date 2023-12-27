@@ -59,8 +59,6 @@ struct CountMap{
 	}
 
 	int query(uint32_t hashValue){
-		assert(*(uint32_t*)((char*)&hashValue) == hashValue);
-		// uint32_t hashValue = hash(key, len);
 		if(sketch){
 			return SKcnt -> Query((char*)&hashValue, 4);
 		}
@@ -72,7 +70,6 @@ struct CountMap{
 	}
 
 	Point sample(uint32_t hashValue){
-		// uint32_t hashValue = hash(key, len);
 		if(sketch){
 			return SKcnt -> Sample((char*)&hashValue, 4);
 		}
