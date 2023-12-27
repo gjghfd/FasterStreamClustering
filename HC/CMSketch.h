@@ -59,7 +59,6 @@ public:
 		sum += MAX_HASH_NUM * sizeof(int);
 		sum += 4 * MAX_HASH_NUM * sizeof(int*);
 		sum += 2 * w * d *sizeof(int);
-		sum += w * d * sizeof(short);
 		for(int i = 0; i < d; i++)
 			for(int j = 0; j < w; j++){
 				if(sampler[i][j].empty()) continue;
@@ -78,7 +77,8 @@ public:
 				counter[i][index[i]]++;
 				// if(counter[i][index[i]] > 0 && name[i][index[i]] != *(uint32_t*)str) puts("collision");
 				name[i][index[i]] = *(uint32_t*)str;
-				if(((2 << ( sampler[i][index[i]].size())) < counter[i][index[i]] || sampler[i][index[i]].empty()) && sampler[i][index[i]].size() < m)
+				if(((2 << (int)(sampler[i][index[i]].size())) < counter[i][index[i]] || sampler[i][index[i]].empty()) && sampler[i][index[i]].size() < m)
+				// if(sampler[i][index[i]].size() < m)
 					sampler[i][index[i]].push_back(point);
 				else{
 					if(myRand(1) < sampler[i][index[i]].size() / (double)counter[i][index[i]]){
@@ -115,7 +115,7 @@ public:
 			min_value = temp < min_value ? temp : min_value;
 			where = temp == min_value ? i : where;
 		}
-		int idx = (pointer[where][index[where]] = (pointer[where][index[where]] + 1) % sampler[where][index[where]].size());
+		int idx = myRand(sampler[where][index[where]].size());
 		return sampler[where][index[where]][idx];
 	
 	}

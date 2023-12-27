@@ -18,7 +18,7 @@ struct CountMap{
 		else seed = myRand(1) * (1<<30);
 		sketch = sketch_;
 
-		SKcnt = new CMSketch(64, 4, _m);
+		SKcnt = new CMSketch(128, 4, _m);
 
 	}
 

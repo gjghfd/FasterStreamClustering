@@ -1,6 +1,6 @@
 #include "common.h"
 #include "vanilla.h"
-#define subSample  100
+#define subSample 2000
 
 vector<Point> savedata;
 
@@ -14,7 +14,7 @@ Vanilla::Vanilla(int k_, int d_, int Delta_, double opt_, int sz, bool sketch_) 
     has_coreset = false;
     coreset_size = sz;
     for(int i = 0; i < Depth; i++)
-        CM.push_back(CountMap(-1, sketch_, sz / 10));
+        CM.push_back(CountMap(-1, sketch_, sz / 5));
     CM.resize(Depth);
     // for(int i = 0; i < Depth; i++){
     //     Sampler.push_back(SampleMap(&CM[i], coreset_size));
@@ -80,7 +80,7 @@ void Vanilla::getCoreset(int sz){
     // printf("%d\n", Depth);
 
     for(int i = 0; i < Depth; i++){
-        // printf("%d\n", MM[i].size());
+        // printf("%d %d\n", i, MM[i].size());
         // printf("%d: ", i);
         double g = Delta >> i;
         double T = (d / g) * (d / g) * opt; 
@@ -102,8 +102,21 @@ void Vanilla::getCoreset(int sz){
             // Point pt = Sampler[i].query(curHashValue, 1);
             Point pt = CM[i].sample(curHashValue);
 
-            vector<int> seq = discrete(pt, g1);
-            if(i > 0 && CM[i-1].query(&seq[0], d) * Pr1 <= T1) continue;
+            int flg = 1;
+            for(int t = -1; t < i; t++){
+                double  g2;
+                if(t < 0) g2 = Delta * 2; else g2 = Delta >> t;
+                double T2 = (d / g2) * (d / g2) * opt; 
+
+                int Pr2 = max(T2/subSample,1.0);
+                vector<int> seq = discrete(pt, g2);
+                if(t > 0 && CM[t].query(&seq[0], d) * Pr2 <= T2){
+                    flg = 0; break;
+                }
+            }
+            if(!flg) continue;
+            // vector<int> seq = discrete(pt, g1);
+            // if(i > 0 && CM[i-1].query(&seq[0], d) * Pr1 <= T1) continue;
             cru[i].insert(curHashValue);
             cru_size[i] += CM[i].query(curHashValue) * Pr;
             // cru_weight[i] += CM[i].query(curHashValue) / T;
@@ -200,7 +213,10 @@ void Vanilla::getCoreset(int sz){
                 // Point pt = Sampler[i].query(cru_vec[j]);
                 Point pt = CM[i].sample(cru_vec[j]);
                 // pt.weight *= n / (double)sz;
-                pt.weight *= sum_weight / cru_weight[i] / (double)sz;
+                // pt.weight *= sum_weight / cru_weight[i] / (double)sz;
+
+
+                pt.weight *= cru_size[i] / (double) sample_num[i];
                 // pt.weight *= cru_size[i] * Pr / (double) sample_num[i];
                 // pt.weight *=  n * total_size / (double)snum[j];
                 // pt.weight *=  sum_weight / (double)(cru_weight[i]) * Pr / sz;

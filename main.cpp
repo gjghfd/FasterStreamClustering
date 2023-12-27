@@ -104,6 +104,24 @@ int main() {
             double total_diff[NUM_ALG] = {0};
             double total_std_dis = 0;
 
+
+            vector<Point> testCenters[NUM_DIFF_TEST];
+            double testDis[NUM_DIFF_TEST];
+            for (int i = 0; i < NUM_DIFF_TEST; i++) {
+                if(i<NUM_DIFF_TEST / 2){
+                    testCenters[i].resize(k);
+                    for(int j = 0; j < k; j++) testCenters[i][j] = points[(int)myRand(n)];
+                    testDis[i] = squaredDistance(points, testCenters[i], k, d);
+                }
+                // use randomly generated cluster centers
+                else{
+                    auto centers = KMeans(points, k, d);
+                    testCenters[i].assign(centers.begin(), centers.end());
+                    testDis[i] = squaredDistance(points, testCenters[i], k, d);
+                }
+                
+            }
+
             for (int round = 1; round <= TEST_ROUND; round++) {
                 uint64_t used_mem[NUM_ALG];
                 double latency[NUM_ALG];
@@ -111,21 +129,14 @@ int main() {
                 double dis[NUM_ALG];
                 double diff[NUM_ALG];
 
-                vector<Point> testCenters[NUM_DIFF_TEST];
-                double testDis[NUM_DIFF_TEST];
-                for (int i = 0; i < NUM_DIFF_TEST; i++) {
-                    // use randomly generated cluster centers
-                    auto centers = KMeans(points, k, d);
-                    testCenters[i].assign(centers.begin(), centers.end());
-                    testDis[i] = squaredDistance(points, testCenters[i], k, d);
-                }
+                
 
                 // alg1
-                streamKMplusplus streamKMppclustering(k, d, 500);
+                streamKMplusplus streamKMppclustering(k, d, 2016);
                 runTest(streamKMppclustering, 0, points, testCenters, testDis, used_mem, latency, P99_latency, dis, diff, k, d);
 
                 // alg2
-                Vanilla vanillaclustering(k, d, 1 << ((int)log2(mx) + 1), 200, 500, 1);
+                Vanilla vanillaclustering(k, d, 1 << ((int)log2(mx) + 1), 100, 2016, 1);
                 runTest(vanillaclustering, 1, points, testCenters, testDis, used_mem, latency, P99_latency, dis, diff, k, d);
 
                 total_std_dis += squaredDistance(points, KMeans(points, k, d), k, d);
