@@ -3,7 +3,7 @@
 
 #include "common.h"
 #include "murmur3.h"
-#include "HC/CMSketch.h"
+#include "CMSketch.h"
 
 
 struct CountMap{

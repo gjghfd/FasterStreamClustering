@@ -1,3 +1,5 @@
+// retrived from https://github.com/wenjunpaper/CuckooCounter
+
 #ifndef _BOBHASH_H
 #define _BOBHASH_H
 #include <stdio.h>

@@ -1,3 +1,5 @@
+// retrived from https://github.com/wenjunpaper/CuckooCounter
+
 #ifndef _CMSKETCH_H
 #define _CMSKETCH_H
 
@@ -6,7 +8,7 @@
 #include <string.h>
 #include "params.h"
 #include "BOBHash.h"
-#include "../common.h"
+#include "common.h"
 #include <iostream>
 
 using namespace std;
