@@ -14,8 +14,8 @@ Then you can see results printed in the command line.
 ### TODO
 
 - Support dynamic gird partition.
-- Replace CountMin Sketch with Elastic Skecth.
-
+- Replace the CountMin Sketch with the Elastic Sketch.
+- Add multi-core support.
 
 ### References
 
