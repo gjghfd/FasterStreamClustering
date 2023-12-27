@@ -68,7 +68,7 @@ void Vanilla::getCoreset(int sz){
     has_coreset = true;
     coreset.clear();
 
-    printf("begin construction\n");
+    // printf("begin construction\n");
 
     vector<set<uint32_t> > cru;
     vector<int> cru_size;
@@ -86,7 +86,7 @@ void Vanilla::getCoreset(int sz){
         double T = (d / g) * (d / g) * opt; 
         int Pr = max(T/subSample,1.0);
         // int Pr = max(d/g/subSample,1.0);
-        printf("%d %d %lf\n", i, Pr, T);
+        // printf("%d %d %lf\n", i, Pr, T);
         double T1 = T / 4, g1 = g * 2;
         int Pr1 = max(T1/subSample,1.0);
 
@@ -236,11 +236,11 @@ void Vanilla::getCoreset(int sz){
         // }
     }
 
-    savedata.clear();
-    printf("coreset size %d\n", (int)coreset.size());
+    // savedata.clear();
+    // printf("coreset size %d\n", (int)coreset.size());
     double sumw = 0;
     for(int i = 0; i < coreset.size(); i++) sumw+=coreset[i].weight;
-    printf("total weight: %lf\n", sumw);
+    // printf("total weight: %lf\n", sumw);
     for(int i = 0; i < coreset.size(); i++) coreset[i].weight *= n / sumw;
 
     // while(sz--){

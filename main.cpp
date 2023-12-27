@@ -8,14 +8,14 @@ Runs all algorithms
 */
 
 #define NUM_ALG 2
-#define NUM_DATASET 5
+#define NUM_DATASET 4
 #define TEST_ROUND 3
 #define NUM_DIFF_TEST 10
 
 #define MAX_POINTS 50000
 
-const string input_files[NUM_DATASET] = {"census.txt", "Adult.txt", "Bank.txt", "twitter.txt", "USC.txt"};
-const char *alg_name[NUM_ALG] = {"streamKM++", "vanilla"};
+const string input_files[NUM_DATASET] = {"USC.txt", "Adult.txt", "Bank.txt", "twitter.txt"};
+const char *alg_name[NUM_ALG] = {"streamKM++", "ours"};
 
 // get current time in ms
 static struct timespec base_time;
@@ -89,141 +89,72 @@ int main() {
             points.emplace_back(p);
         }
 
-        printf("max %lf\n", mx);
+        printf("max = %lf\n", mx);
         fclose(input);
 
         // start running
-        
-        for (int k = 10; k <= 10; k += 5) {
-            printf("----- Running on Dataset %s (%d points) with k = %d -----\n", input_files[dataset].c_str(), n, k);
+        int k = 10, m =500;
 
-            uint64_t total_used_mem[NUM_ALG] = {0};
-            double total_latency[NUM_ALG] = {0};
-            double total_P99_latency[NUM_ALG] = {0};
-            double total_dis[NUM_ALG] = {0};
-            double total_diff[NUM_ALG] = {0};
-            double total_std_dis = 0;
+        printf("----- Running on Dataset %s (%d points) with k = %d, m = %d -----\n", input_files[dataset].c_str(), n, k, m);
+
+        uint64_t total_used_mem[NUM_ALG] = {0};
+        double total_latency[NUM_ALG] = {0};
+        double total_P99_latency[NUM_ALG] = {0};
+        double total_dis[NUM_ALG] = {0};
+        double total_diff[NUM_ALG] = {0};
+        double total_std_dis = 0;
 
 
-            vector<Point> testCenters[NUM_DIFF_TEST];
-            double testDis[NUM_DIFF_TEST];
-            for (int i = 0; i < NUM_DIFF_TEST; i++) {
-                if(i<NUM_DIFF_TEST / 2){
-                    testCenters[i].resize(k);
-                    for(int j = 0; j < k; j++) testCenters[i][j] = points[(int)myRand(n)];
-                    testDis[i] = squaredDistance(points, testCenters[i], k, d);
-                }
-                // use randomly generated cluster centers
-                else{
-                    auto centers = KMeans(points, k, d);
-                    testCenters[i].assign(centers.begin(), centers.end());
-                    testDis[i] = squaredDistance(points, testCenters[i], k, d);
-                }
-                
+        vector<Point> testCenters[NUM_DIFF_TEST];
+        double testDis[NUM_DIFF_TEST];
+        for (int i = 0; i < NUM_DIFF_TEST; i++) {
+            if(i < NUM_DIFF_TEST / 2){
+                testCenters[i].resize(k);
+                for(int j = 0; j < k; j++) testCenters[i][j] = points[(int)myRand(n)];
+                testDis[i] = squaredDistance(points, testCenters[i], k, d);
             }
-
-            for (int round = 1; round <= TEST_ROUND; round++) {
-                uint64_t used_mem[NUM_ALG];
-                double latency[NUM_ALG];
-                double P99_latency[NUM_ALG];
-                double dis[NUM_ALG];
-                double diff[NUM_ALG];
-
-                
-
-                // alg1
-                streamKMplusplus streamKMppclustering(k, d, 2016);
-                runTest(streamKMppclustering, 0, points, testCenters, testDis, used_mem, latency, P99_latency, dis, diff, k, d);
-
-                // alg2
-                Vanilla vanillaclustering(k, d, 1 << ((int)log2(mx) + 1), 100, 2016, 1);
-                runTest(vanillaclustering, 1, points, testCenters, testDis, used_mem, latency, P99_latency, dis, diff, k, d);
-
-                total_std_dis += squaredDistance(points, KMeans(points, k, d), k, d);
-
-                for (int i = 0; i < NUM_ALG; i++) {
-                    printf("Round #%d: Alg %s, memory = %llu bytes, avg latency = %.5lf ms, p99 latency = %.5lf ms, kmeans = %.5lf, diff = %.5lf%%\n", round, alg_name[i], used_mem[i], latency[i], P99_latency[i], dis[i], diff[i] * 100.0);
-                    total_used_mem[i] += used_mem[i];
-                    total_latency[i] += latency[i];
-                    total_P99_latency[i] += P99_latency[i];
-                    total_dis[i] += dis[i];
-                    total_diff[i] += diff[i];
-                }
+            // use randomly generated cluster centers
+            else{
+                auto centers = KMeans(points, k, d);
+                testCenters[i].assign(centers.begin(), centers.end());
+                testDis[i] = squaredDistance(points, testCenters[i], k, d);
             }
+            
+        }
 
-            printf("\nSummary: \n");
+        for (int round = 1; round <= TEST_ROUND; round++) {
+            uint64_t used_mem[NUM_ALG];
+            double latency[NUM_ALG];
+            double P99_latency[NUM_ALG];
+            double dis[NUM_ALG];
+            double diff[NUM_ALG];
+
+            // alg1
+            streamKMplusplus streamKMppclustering(k, d, m);
+            runTest(streamKMppclustering, 0, points, testCenters, testDis, used_mem, latency, P99_latency, dis, diff, k, d);
+
+            // alg2
+            Vanilla vanillaclustering(k, d, 1 << ((int)log2(mx) + 1), 100, m, 1);
+            runTest(vanillaclustering, 1, points, testCenters, testDis, used_mem, latency, P99_latency, dis, diff, k, d);
+
+            total_std_dis += squaredDistance(points, KMeans(points, k, d), k, d);
+
             for (int i = 0; i < NUM_ALG; i++) {
-                printf("%s: memory = %llu bytes, avg latency = %.5lf ms, p99 latency = %.5lf ms, kmeans = %.5lf, diff = %.5lf%%\n", alg_name[i], total_used_mem[i] / TEST_ROUND, total_latency[i] / TEST_ROUND, total_P99_latency[i] / TEST_ROUND, total_dis[i] / TEST_ROUND, (total_diff[i] / TEST_ROUND) * 100.0);
+                printf("Round #%d: Alg %s, memory = %llu bytes, avg latency = %.5lf ms, p99 latency = %.5lf ms, kmeans = %.5lf, diff = %.5lf%%\n", round, alg_name[i], used_mem[i], latency[i], P99_latency[i], dis[i], diff[i] * 100.0);
+                total_used_mem[i] += used_mem[i];
+                total_latency[i] += latency[i];
+                total_P99_latency[i] += P99_latency[i];
+                total_dis[i] += dis[i];
+                total_diff[i] += diff[i];
             }
-            printf("standard k-means = %.5lf\n\n", total_std_dis / TEST_ROUND);
-            fflush(stdout);
         }
 
-        // generate trace for deletion test
-        /*
-        vector<int> trace;
-        multiset<int> active;
-        for (int i = 0; i < MAX_POINTS * 10; i++) {
-            if (active.size() < MAX_POINTS || myRand(1) >= 0.5) {
-                // insert
-                int idx = myRand(MAX_POINTS);
-                trace.emplace_back(idx);
-                active.insert(idx);
-            } else {
-                // delete
-                int counter = 0;
-                while (++counter <= 10) {
-                    int rd = myRand(MAX_POINTS);
-                    auto iter = active.lower_bound(rd);
-                    int idx = *iter;
-                    if (counter == 10 || idx - rd <= 10) {
-                        trace.emplace_back(-idx - 1);
-                        active.erase(iter);
-                        break;
-                    }
-                }
-            }
+        printf("\nSummary: \n");
+        for (int i = 0; i < NUM_ALG; i++) {
+            printf("%s: memory = %llu bytes, avg latency = %.5lf ms, p99 latency = %.5lf ms, kmeans = %.5lf, diff = %.5lf%%\n", alg_name[i], total_used_mem[i] / TEST_ROUND, total_latency[i] / TEST_ROUND, total_P99_latency[i] / TEST_ROUND, total_dis[i] / TEST_ROUND, (total_diff[i] / TEST_ROUND) * 100.0);
         }
-        vector<Point> final_points;
-        for (auto iter : active) final_points.emplace_back(points[iter]);
-
-        // running
-        for (int k = 10; k <= 15; k += 5) {
-            double total_avg_latency = 0;
-            double total_p99_latency = 0;
-            double total_dis = 0;
-            double total_stddis = 0;
-            for (int round = 1; round <= TEST_ROUND; round++) {
-                Vanilla vanillaclustering(k, d, 1 << ((int)log2(mx) + 1), 200, 100, 1);
-                vector<double> latency(trace.size());
-                int i = 0;
-                for (int p : trace) {
-                    double st_time = getCurrentTime();
-                    if (p >= 0) {
-                        vanillaclustering.update(points[p], true);
-                    } else {
-                        vanillaclustering.update(points[-p-1], false);
-                    }
-                    latency[i++] = getCurrentTime() - st_time;
-                }
-                // process latency
-                sort(latency.begin(), latency.end());
-                double sum = 0;
-                for (double l : latency) sum += l;
-                double avg_latency = sum / (double) trace.size();
-                int p99 = trace.size() - trace.size() / 1000;
-                double p99_latency = latency[p99];
-                double dis = squaredDistance(final_points, vanillaclustering.getClusters(), k, d);
-                double stddis = squaredDistance(final_points, KMeans(final_points, k, d), k, d);
-                total_avg_latency += avg_latency;
-                total_p99_latency += p99_latency;
-                total_dis += dis;
-                total_stddis += stddis;
-            }
-            printf("Deletion test k = %d: avg_latency = %.5lf, p99 latency = %.5lf, dis = %.5lf, stddis = %.5lf\n", \
-            k, total_avg_latency / TEST_ROUND, total_p99_latency / TEST_ROUND, total_dis / TEST_ROUND, total_stddis / TEST_ROUND);
-        }
-        //*/
+        printf("standard k-means = %.5lf\n\n", total_std_dis / TEST_ROUND);
+        fflush(stdout);
     }
     return 0;
 }
