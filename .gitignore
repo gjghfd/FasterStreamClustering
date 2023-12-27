@@ -1,5 +1,3 @@
-main
-kmeans
+src/main
 .vscode
 .DS_Store
-dataset/census.txt
