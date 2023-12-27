@@ -4,7 +4,7 @@ This repo aims to develop some efficient and effective streaming clustering algo
 ### Usage
 We only support MacOS and Linux currently.
 ```
-cd FasterStreamClustering
+cd src
 make
 ./main
 ```
