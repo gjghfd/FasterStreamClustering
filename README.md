@@ -1,6 +1,6 @@
 # FasterStreamClustering
-This repo implements a optimized version of the streaming clustering algorithm proposed in [1].
-We compare the implementation with the state-of-the-art algorithms such as StreamKM++ [2].
+This repo aims to implement an optimized version of the streaming clustering algorithm proposed in [1].
+We compare the implementation with StreamKM++ [2], one of the state-of-the-art streaming clustering algorithms.
 
 ### Usage
 We only support Linux and MacOS currently.
@@ -13,8 +13,8 @@ Then you can see results printed in the command line.
 
 ### TODO
 
-- Support dynamic gird partition
-- Replace CountMin Sketch with Elastic Skecth
+- Support dynamic gird partition.
+- Replace CountMin Sketch with Elastic Skecth.
 
 
 ### References
